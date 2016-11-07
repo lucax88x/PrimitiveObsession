@@ -1,0 +1,22 @@
+*.suo
+*.pdb
+*.user
+lib/**
+build/**
+test/**
+src/**/bin/**
+src/**/obj/**
+**/log/**
+src/Visual Studio 2012
+src/TestResults
+Thumbs.db
+*.vssscc
+*.vspscc
+docs/~*
+**/__thumbnails/**
+
+TestResult.xml
+
+nupkgs/**
+node_modules/**
+**/packages/**
