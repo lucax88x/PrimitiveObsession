@@ -14,4 +14,4 @@ Primitive obsession
 * Tuttavia, questo è un ServiceLocator in disguise. Citare l'articolo di Seeman.
 * Alternativa: raggruppare le configurazioni (esempio: username e password).
 * Soluzione più generale: Evitare i primitivi. Link a primitive obsession. URL non è una stringa. URL, database connection string.
-* Trucco in C# per trattare una classe come primitiva
+* Trucco in C# per trattare una classe come primitiva, vedi https://lostechies.com/jimmybogard/2007/12/03/dealing-with-primitive-obsession/
