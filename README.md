@@ -1,5 +1,5 @@
-Primitive obsession
-===================
+AutoFac and Primitive obsession: how I learned to love injecting configurations
+===============================================================================
 
 * Le configurazioni sono dipendenze: vantaggi nell'avere la configurazione nel punto di ingresso dell'applicazione.
 * Le classi non si rompono a runtime, la dipendenza dalla configurazione diventa esplicita, non è possibile istanziare una classe senza fornire la configurazione.
