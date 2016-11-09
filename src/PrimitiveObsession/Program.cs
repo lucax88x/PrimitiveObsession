@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Specialized;
 using System.Configuration;
 using Autofac;
 using PrimitiveObsession.IoC;
@@ -14,7 +13,10 @@ namespace PrimitiveObsession
             var pistonCount = appSettings["PistonCount"];
             var tireCount = appSettings["TireCount"];
 
-            using (var container = new EngineContainerBuilder().Build(pistonCount, tireCount))
+            var builder = new ContainerBuilder();
+            builder.RegisterModule(new PrimitiveObsessionModule(tireCount, pistonCount));
+
+            using (var container = builder.Build())
             {
                 var engineBuilder = container.Resolve<IEngineBuilder>();
 

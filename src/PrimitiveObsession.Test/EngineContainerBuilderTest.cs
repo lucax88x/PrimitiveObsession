@@ -8,47 +8,51 @@ namespace PrimitiveObsession.Test
 {
     public class EngineContainerBuilderTest
     {
-        private readonly IContainer _sut;
+        private readonly IContainer _container;
 
         public EngineContainerBuilderTest()
         {
-            _sut = new EngineContainerBuilder().Build(tireCount: "4", pistonCount: "6");
+            var sut = new PrimitiveObsessionModule("6", "4");
+
+            var builder = new ContainerBuilder();
+            builder.RegisterModule(sut);
+            _container = builder.Build();
         }
 
         [Fact]
         public void should_resolve_IEngineBuilder()
         {
-            _sut.Resolve<IEngineBuilder>().Should().BeOfType<EngineBuilder>();
+            _container.Resolve<IEngineBuilder>().Should().BeOfType<EngineBuilder>();
         }
 
         [Fact]
         public void should_resolve_ITireBuilder()
         {
-            _sut.Resolve<ITireBuilder>().Should().BeOfType<TireBuilder>();
+            _container.Resolve<ITireBuilder>().Should().BeOfType<TireBuilder>();
         }
 
         [Fact]
         public void should_resolve_TireCount()
         {
-            _sut.Resolve<TireCount>().Should().BeOfType<TireCount>();
+            _container.Resolve<TireCount>().Should().BeOfType<TireCount>();
         }
 
         [Fact]
         public void should_TireCount_have_correct_value()
         {
-            _sut.Resolve<TireCount>().Value.Should().Be(4);
+            _container.Resolve<TireCount>().Value.Should().Be(4);
         }
 
         [Fact]
         public void should_resolve_PistonCount()
         {
-            _sut.Resolve<PistonCount>().Should().BeOfType<PistonCount>();
+            _container.Resolve<PistonCount>().Should().BeOfType<PistonCount>();
         }
 
         [Fact]
         public void should_PistonCount_have_correct_value()
         {
-            _sut.Resolve<PistonCount>().Value.Should().Be(6);
+            _container.Resolve<PistonCount>().Value.Should().Be(6);
         }
     }
 }
