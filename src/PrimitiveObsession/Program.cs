@@ -11,7 +11,10 @@ namespace PrimitiveObsession
         static void Main()
         {
             var appSettings = ConfigurationManager.AppSettings;
-            using (var container = new EngineContainerBuilder(appSettings).Build())
+            var pistonCount = appSettings["PistonCount"];
+            var tireCount = appSettings["TireCount"];
+
+            using (var container = new EngineContainerBuilder().Build(pistonCount, tireCount))
             {
                 var engineBuilder = container.Resolve<IEngineBuilder>();
 

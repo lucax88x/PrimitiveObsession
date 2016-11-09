@@ -1,5 +1,4 @@
-﻿using System.Collections.Specialized;
-using Autofac;
+﻿using Autofac;
 using FluentAssertions;
 using PrimitiveObsession.Config;
 using PrimitiveObsession.IoC;
@@ -13,12 +12,7 @@ namespace PrimitiveObsession.Test
 
         public EngineContainerBuilderTest()
         {
-            var collection = new NameValueCollection {
-                { "TireCount", "4" },
-                { "PistonCount", "6" }
-            };
-
-            _sut = new EngineContainerBuilder(collection).Build();
+            _sut = new EngineContainerBuilder().Build(tireCount: "4", pistonCount: "6");
         }
 
         [Fact]
