@@ -17,8 +17,9 @@ namespace PrimitiveObsession
             builder.RegisterModule(new PrimitiveObsessionModule(tireCount, pistonCount));
 
             using (var container = builder.Build())
+            using (var scope = container.BeginLifetimeScope())
             {
-                var engineBuilder = container.Resolve<IEngineBuilder>();
+                var engineBuilder = scope.Resolve<IEngineBuilder>();
 
                 Console.WriteLine(engineBuilder.Build());
             }
