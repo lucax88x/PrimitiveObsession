@@ -47,7 +47,7 @@ namespace PrimitiveObsession.Test
         }
 
         [Fact]
-        public void should_TireCount_have_correct_value()
+        public void TireCount_should_have_correct_value()
         {
             var tireCount = _scope.Resolve<TireCount>();
             ((short)tireCount).Should().Be(4);
