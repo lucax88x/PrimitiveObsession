@@ -10,8 +10,8 @@ namespace PrimitiveObsession
         static void Main()
         {
             var appSettings = ConfigurationManager.AppSettings;
-            var pistonCount = appSettings["PistonCount"];
-            var tireCount = appSettings["TireCount"];
+            var pistonCount = short.Parse(appSettings["PistonCount"]);
+            var tireCount = short.Parse(appSettings["TireCount"]);
 
             var builder = new ContainerBuilder();
             builder.RegisterModule(new PrimitiveObsessionModule(tireCount, pistonCount));

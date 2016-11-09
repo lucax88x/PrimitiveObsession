@@ -1,10 +1,22 @@
 ﻿namespace PrimitiveObsession.Config
 {
-    public class TireCount : ConfigurationValue<short>
+    public class TireCount
     {
-        public TireCount(string value)
+        short Value { get; }
+
+        public TireCount(short value)
         {
-            Value = short.Parse(value);
+            Value = value;
+        }
+
+        public static implicit operator short(TireCount TireCount)
+        {
+            return TireCount.Value;
+        }
+
+        public static explicit operator TireCount(short value)
+        {
+            return new TireCount(value);
         }
     }
 }

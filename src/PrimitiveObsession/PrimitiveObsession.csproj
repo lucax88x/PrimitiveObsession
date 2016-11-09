@@ -48,7 +48,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Config\ConfigurationValue.cs" />
     <Compile Include="Config\PistonCount.cs" />
     <Compile Include="Config\TireCount.cs" />
     <Compile Include="IoC\PrimitiveObsessionModule.cs" />

@@ -21,7 +21,7 @@ namespace PrimitiveObsession
             var sb = new StringBuilder();
 
             sb.Append("Tires: ");
-            for (var i = 0; i < _tireCount.Value; i++) sb.Append("()");
+            for (var i = 0; i < _tireCount; i++) sb.Append("()");
 
             return sb.ToString();
         }

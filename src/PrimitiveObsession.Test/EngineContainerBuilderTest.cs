@@ -14,7 +14,7 @@ namespace PrimitiveObsession.Test
 
         public EngineContainerBuilderTest()
         {
-            var sut = new PrimitiveObsessionModule("6", "4");
+            var sut = new PrimitiveObsessionModule(pistonCount: 6, tireCount: 4);
 
             var builder = new ContainerBuilder();
             builder.RegisterModule(sut);
@@ -49,7 +49,8 @@ namespace PrimitiveObsession.Test
         [Fact]
         public void should_TireCount_have_correct_value()
         {
-            _scope.Resolve<TireCount>().Value.Should().Be(4);
+            var tireCount = _scope.Resolve<TireCount>();
+            ((short)tireCount).Should().Be(4);
         }
 
         [Fact]
@@ -61,7 +62,8 @@ namespace PrimitiveObsession.Test
         [Fact]
         public void should_PistonCount_have_correct_value()
         {
-            _scope.Resolve<PistonCount>().Value.Should().Be(6);
+            var pistonCount = _scope.Resolve<PistonCount>();
+            ((short)pistonCount).Should().Be(6);
         }
     }
 }

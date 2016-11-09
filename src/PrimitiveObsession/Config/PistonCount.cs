@@ -1,10 +1,22 @@
 ﻿namespace PrimitiveObsession.Config
 {
-    public class PistonCount : ConfigurationValue<short>
+    public class PistonCount
     {
-        public PistonCount(string value)
+        short Value { get; }
+
+        public PistonCount(short value)
         {
-            Value = short.Parse(value);
+            Value = value;
+        }
+
+        public static implicit operator short(PistonCount pistonCount)
+        {
+            return pistonCount.Value;
+        }
+
+        public static explicit operator PistonCount(short value)
+        {
+            return new PistonCount(value);
         }
     }
 }

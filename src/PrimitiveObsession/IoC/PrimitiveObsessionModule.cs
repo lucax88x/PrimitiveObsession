@@ -5,10 +5,10 @@ namespace PrimitiveObsession.IoC
 {
     public class PrimitiveObsessionModule : Module
     {
-        private readonly string _pistonCount;
-        private readonly string _tireCount;
+        private readonly short _pistonCount;
+        private readonly short _tireCount;
 
-        public PrimitiveObsessionModule(string pistonCount, string tireCount)
+        public PrimitiveObsessionModule(short pistonCount, short tireCount)
         {
             _pistonCount = pistonCount;
             _tireCount = tireCount;
@@ -16,8 +16,8 @@ namespace PrimitiveObsession.IoC
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.Register(x => { return new TireCount(_tireCount); });
-            builder.Register(x => { return new PistonCount(_pistonCount); });
+            builder.Register(x => new TireCount(_tireCount));
+            builder.Register(x => new PistonCount(_pistonCount));
             builder.RegisterType<EngineBuilder>().As<IEngineBuilder>();
             builder.RegisterType<TireBuilder>().As<ITireBuilder>();
         }

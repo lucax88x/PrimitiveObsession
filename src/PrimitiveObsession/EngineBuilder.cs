@@ -28,7 +28,7 @@ namespace PrimitiveObsession
             var sb = new StringBuilder();
 
             sb.Append("Pistons: ");
-            for (var i = 0; i < _pistonCount.Value; i++) sb.Append("||");
+            for (var i = 0; i < _pistonCount; i++) sb.Append("||");
 
             sb.AppendLine();
             sb.Append(_tireBuilder.Build());
