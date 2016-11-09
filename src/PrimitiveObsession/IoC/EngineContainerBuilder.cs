@@ -17,8 +17,7 @@ namespace PrimitiveObsession.IoC
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterModule(new ConfigModule(_config));
-            builder.RegisterModule(new MainModule());
+            builder.RegisterModule(new PrimitiveObsessionModule(_config));
 
             return builder.Build();
         }
