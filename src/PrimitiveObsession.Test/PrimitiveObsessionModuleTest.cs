@@ -14,7 +14,7 @@ namespace PrimitiveObsession.Test
 
         public PrimitiveObsessionModuleTest()
         {
-            var sut = new PrimitiveObsessionModule(someConnectionString: "someConnectionString");
+            var sut = new PrimitiveObsessionModule(connectionString: "someConnectionString");
 
             var builder = new ContainerBuilder();
             builder.RegisterModule(sut);
@@ -38,6 +38,12 @@ namespace PrimitiveObsession.Test
         public void should_resolve_Bar()
         {
             _scope.Resolve<Bar>().Should().NotBeNull();
+        }
+
+        [Fact]
+        public void should_resolve_Baz()
+        {
+            _scope.Resolve<Baz>().Should().NotBeNull();
         }
 
         [Fact]

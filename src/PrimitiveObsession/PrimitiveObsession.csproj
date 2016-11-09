@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Baz.cs" />
     <Compile Include="Config\ConnectionString.cs" />
     <Compile Include="IoC\PrimitiveObsessionModule.cs" />
     <Compile Include="Foo.cs" />
