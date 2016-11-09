@@ -3,11 +3,7 @@ using PrimitiveObsession.Config;
 
 namespace PrimitiveObsession
 {
-    public interface ITireBuilder : IBuilder
-    {
-    }
-
-    public class TireBuilder : ITireBuilder
+    public class TireBuilder
     {
         private readonly TireCount _tireCount;
 

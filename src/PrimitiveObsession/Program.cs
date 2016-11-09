@@ -19,7 +19,7 @@ namespace PrimitiveObsession
             using (var container = builder.Build())
             using (var scope = container.BeginLifetimeScope())
             {
-                var engineBuilder = scope.Resolve<IEngineBuilder>();
+                var engineBuilder = scope.Resolve<EngineBuilder>();
 
                 Console.WriteLine(engineBuilder.Build());
             }

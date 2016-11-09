@@ -3,21 +3,12 @@ using PrimitiveObsession.Config;
 
 namespace PrimitiveObsession
 {
-    public interface IBuilder
+    public class EngineBuilder
     {
-        string Build();
-    }
-
-    public interface IEngineBuilder : IBuilder
-    {
-    }
-
-    public class EngineBuilder : IEngineBuilder
-    {
-        private readonly ITireBuilder _tireBuilder;
+        private readonly TireBuilder _tireBuilder;
         private readonly PistonCount _pistonCount;
 
-        public EngineBuilder(ITireBuilder tireBuilder, PistonCount pistonCount)
+        public EngineBuilder(TireBuilder tireBuilder, PistonCount pistonCount)
         {
             _tireBuilder = tireBuilder;
             _pistonCount = pistonCount;

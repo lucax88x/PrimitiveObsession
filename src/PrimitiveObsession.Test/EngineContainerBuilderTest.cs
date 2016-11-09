@@ -29,21 +29,21 @@ namespace PrimitiveObsession.Test
         }
 
         [Fact]
-        public void should_resolve_IEngineBuilder()
+        public void should_resolve_EngineBuilder()
         {
-            _scope.Resolve<IEngineBuilder>().Should().BeOfType<EngineBuilder>();
+            _scope.Resolve<EngineBuilder>().Should().NotBeNull();
         }
 
         [Fact]
-        public void should_resolve_ITireBuilder()
+        public void should_resolve_TireBuilder()
         {
-            _scope.Resolve<ITireBuilder>().Should().BeOfType<TireBuilder>();
+            _scope.Resolve<TireBuilder>().Should().NotBeNull();
         }
 
         [Fact]
         public void should_resolve_TireCount()
         {
-            _scope.Resolve<TireCount>().Should().BeOfType<TireCount>();
+            _scope.Resolve<TireCount>().Should().NotBeNull();
         }
 
         [Fact]
@@ -56,7 +56,7 @@ namespace PrimitiveObsession.Test
         [Fact]
         public void should_resolve_PistonCount()
         {
-            _scope.Resolve<PistonCount>().Should().BeOfType<PistonCount>();
+            _scope.Resolve<PistonCount>().Should().NotBeNull();
         }
 
         [Fact]

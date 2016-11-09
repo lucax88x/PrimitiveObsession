@@ -18,8 +18,8 @@ namespace PrimitiveObsession.IoC
         {
             builder.Register(x => new TireCount(_tireCount));
             builder.Register(x => new PistonCount(_pistonCount));
-            builder.RegisterType<EngineBuilder>().As<IEngineBuilder>();
-            builder.RegisterType<TireBuilder>().As<ITireBuilder>();
+            builder.RegisterType<EngineBuilder>();
+            builder.RegisterType<TireBuilder>();
         }
     }
 }
