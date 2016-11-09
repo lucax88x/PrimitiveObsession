@@ -10,9 +10,10 @@ namespace PrimitiveObsession
         static void Main()
         {
             var connectionString = ConfigurationManager.AppSettings["ConnectionString"];
+            var url = ConfigurationManager.AppSettings["Url"];
 
             var builder = new ContainerBuilder();
-            builder.RegisterModule(new PrimitiveObsessionModule(connectionString));
+            builder.RegisterModule(new PrimitiveObsessionModule(connectionString, url));
 
             using (var container = builder.Build())
             using (var scope = container.BeginLifetimeScope())
