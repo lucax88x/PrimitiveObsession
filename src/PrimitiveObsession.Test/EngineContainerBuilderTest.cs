@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
 using FluentAssertions;
 using PrimitiveObsession.Config;
 using PrimitiveObsession.IoC;
@@ -6,7 +7,7 @@ using Xunit;
 
 namespace PrimitiveObsession.Test
 {
-    public class EngineContainerBuilderTest
+    public class EngineContainerBuilderTest : IDisposable
     {
         private readonly IContainer _container;
 
@@ -17,6 +18,11 @@ namespace PrimitiveObsession.Test
             var builder = new ContainerBuilder();
             builder.RegisterModule(sut);
             _container = builder.Build();
+        }
+
+        public void Dispose()
+        {
+            _container.Dispose();
         }
 
         [Fact]
