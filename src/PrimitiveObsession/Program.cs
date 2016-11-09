@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Configuration;
 using Autofac;
 using PrimitiveObsession.IoC;
@@ -9,7 +10,8 @@ namespace PrimitiveObsession
     {
         static void Main()
         {
-            using (var container = new EngineContainerBuilder(ConfigurationManager.AppSettings).Build())
+            var appSettings = ConfigurationManager.AppSettings;
+            using (var container = new EngineContainerBuilder(appSettings).Build())
             {
                 var engineBuilder = container.Resolve<IEngineBuilder>();
 

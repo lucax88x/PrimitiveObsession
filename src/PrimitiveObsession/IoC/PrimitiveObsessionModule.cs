@@ -1,25 +1,25 @@
-﻿using System.Collections.Specialized;
-using Autofac;
+﻿using Autofac;
 using PrimitiveObsession.Config;
 
 namespace PrimitiveObsession.IoC
 {
     public class PrimitiveObsessionModule : Module
     {
-        private readonly NameValueCollection _config;
+        private readonly string _pistonCount;
+        private readonly string _tireCount;
 
-        public PrimitiveObsessionModule(NameValueCollection config)
+        public PrimitiveObsessionModule(string pistonCount, string tireCount)
         {
-            _config = config;
+            _pistonCount = pistonCount;
+            _tireCount = tireCount;
         }
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.Register(x => new TireCount(_config["TireCount"]));
-            builder.Register(x => new PistonCount(_config["PistonCount"]));
+            builder.Register(x => { return new TireCount(_tireCount); });
+            builder.Register(x => { return new PistonCount(_pistonCount); });
             builder.RegisterType<EngineBuilder>().As<IEngineBuilder>();
             builder.RegisterType<TireBuilder>().As<ITireBuilder>();
-
         }
     }
 }

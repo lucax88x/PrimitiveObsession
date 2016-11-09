@@ -17,7 +17,9 @@ namespace PrimitiveObsession.IoC
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterModule(new PrimitiveObsessionModule(_config));
+            var pistonCount = _config["PistonCount"];
+            var tireCount = _config["TireCount"];
+            builder.RegisterModule(new PrimitiveObsessionModule(pistonCount, tireCount));
 
             return builder.Build();
         }
