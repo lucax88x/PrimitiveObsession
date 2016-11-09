@@ -1,6 +1,6 @@
 ﻿using Autofac;
 
-namespace PrimitiveObsession.DI
+namespace PrimitiveObsession.IoC
 {
     public class MainModule : Module
     {

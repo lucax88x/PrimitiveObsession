@@ -2,7 +2,7 @@
 using Autofac;
 using FluentAssertions;
 using PrimitiveObsession.Config;
-using PrimitiveObsession.DI;
+using PrimitiveObsession.IoC;
 using Xunit;
 
 namespace PrimitiveObsession.Test

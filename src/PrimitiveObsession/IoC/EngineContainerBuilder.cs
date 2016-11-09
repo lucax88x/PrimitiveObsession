@@ -1,7 +1,7 @@
 ﻿using System.Collections.Specialized;
 using Autofac;
 
-namespace PrimitiveObsession.DI
+namespace PrimitiveObsession.IoC
 {
     public class EngineContainerBuilder
     {

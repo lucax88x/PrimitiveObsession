@@ -51,10 +51,10 @@
     <Compile Include="Config\ConfigurationValue.cs" />
     <Compile Include="Config\PistonCount.cs" />
     <Compile Include="Config\TireCount.cs" />
-    <Compile Include="DI\ConfigModule.cs" />
-    <Compile Include="DI\EngineContainerBuilder.cs" />
+    <Compile Include="IoC\ConfigModule.cs" />
+    <Compile Include="IoC\EngineContainerBuilder.cs" />
     <Compile Include="EngineBuilder.cs" />
-    <Compile Include="DI\MainModule.cs" />
+    <Compile Include="IoC\MainModule.cs" />
     <Compile Include="TireBuilder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

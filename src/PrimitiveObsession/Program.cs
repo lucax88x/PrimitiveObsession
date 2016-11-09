@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using Autofac;
-using PrimitiveObsession.DI;
+using PrimitiveObsession.IoC;
 
 namespace PrimitiveObsession
 {
