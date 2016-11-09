@@ -1,4 +1,4 @@
 ﻿namespace PrimitiveObsession
 {
-    public class TireBuilder { }
+    public class Bar { }
 }

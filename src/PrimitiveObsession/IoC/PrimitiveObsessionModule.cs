@@ -5,21 +5,18 @@ namespace PrimitiveObsession.IoC
 {
     public class PrimitiveObsessionModule : Module
     {
-        private readonly short _pistonCount;
-        private readonly short _tireCount;
+        private readonly string _someConnectionString;
 
-        public PrimitiveObsessionModule(short pistonCount, short tireCount)
+        public PrimitiveObsessionModule(string someConnectionString)
         {
-            _pistonCount = pistonCount;
-            _tireCount = tireCount;
+            _someConnectionString = someConnectionString;
         }
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.Register(x => new TireCount(_tireCount));
-            builder.Register(x => new PistonCount(_pistonCount));
-            builder.RegisterType<EngineBuilder>();
-            builder.RegisterType<TireBuilder>();
+            builder.Register(x => new ConnectionString(_someConnectionString));
+            builder.RegisterType<Foo>();
+            builder.RegisterType<Bar>();
         }
     }
 }

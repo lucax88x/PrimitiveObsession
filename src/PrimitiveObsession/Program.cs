@@ -9,19 +9,18 @@ namespace PrimitiveObsession
     {
         static void Main()
         {
-            var appSettings = ConfigurationManager.AppSettings;
-            var pistonCount = short.Parse(appSettings["PistonCount"]);
-            var tireCount = short.Parse(appSettings["TireCount"]);
+            var connectionString = ConfigurationManager.AppSettings["ConnectionString"];
 
             var builder = new ContainerBuilder();
-            builder.RegisterModule(new PrimitiveObsessionModule(tireCount, pistonCount));
+            builder.RegisterModule(new PrimitiveObsessionModule(connectionString));
 
             using (var container = builder.Build())
             using (var scope = container.BeginLifetimeScope())
             {
-                var engineBuilder = scope.Resolve<EngineBuilder>();
+                var noObsession = scope.Resolve<Foo>();
 
-                Console.WriteLine($"pistonCound is {(short)engineBuilder.PistonCount}");
+                string connect = noObsession.ConnectionString;
+                Console.WriteLine($"connectionString is {connect}");
             }
 
             Console.ReadLine();
