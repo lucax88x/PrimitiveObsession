@@ -21,10 +21,9 @@ namespace PrimitiveObsession
             {
                 var engineBuilder = scope.Resolve<EngineBuilder>();
 
-                Console.WriteLine(engineBuilder.Build());
+                Console.WriteLine($"pistonCound is {(short)engineBuilder.PistonCount}");
             }
 
-            Console.WriteLine("Engine is ready!");
             Console.ReadLine();
         }
     }

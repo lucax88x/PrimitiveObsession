@@ -1,30 +1,16 @@
-﻿using System.Text;
-using PrimitiveObsession.Config;
+﻿using PrimitiveObsession.Config;
 
 namespace PrimitiveObsession
 {
     public class EngineBuilder
     {
-        private readonly TireBuilder _tireBuilder;
-        private readonly PistonCount _pistonCount;
+        private readonly TireBuilder _tirebuilder;
+        public PistonCount PistonCount { get; }
 
-        public EngineBuilder(TireBuilder tireBuilder, PistonCount pistonCount)
+        public EngineBuilder(TireBuilder tirebuilder, PistonCount pistonPistonCount)
         {
-            _tireBuilder = tireBuilder;
-            _pistonCount = pistonCount;
-        }
-
-        public string Build()
-        {
-            var sb = new StringBuilder();
-
-            sb.Append("Pistons: ");
-            for (var i = 0; i < _pistonCount; i++) sb.Append("||");
-
-            sb.AppendLine();
-            sb.Append(_tireBuilder.Build());
-
-            return sb.ToString();
+            _tirebuilder = tirebuilder;
+            PistonCount = pistonPistonCount;
         }
     }
 }
