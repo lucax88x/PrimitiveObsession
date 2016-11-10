@@ -5,7 +5,7 @@ Registering components in AutoFac is straightforward, as long as no primitive de
 
 ## The ordinary case
 
-Say we have a class `Foo` depending on `Bar`: 
+Say you have a class `Foo` depending on `Bar`: 
 
 ```csharp
 class Foo
@@ -30,7 +30,7 @@ It works with no additional configurations even if dependencies are reversed (e.
 
 ## Here come the primitives
 
-Troubles start when one of the dependencies is a primitive. Suppose that `Foo` also depends on a connection string, which we decided to represent as a `string`:
+Troubles start when one of the dependencies is a primitive. Suppose that `Foo` also depends on a connection string, which you decided to represent as a `string`:
 
 ```csharp
 class Foo
@@ -39,7 +39,7 @@ class Foo
 }
 ```
 
-We are offered a bunch of native Autofac facilities for registering this class. Either we can use a lambda:
+You are offered a bunch of native Autofac facilities for registering this class. Either you can use a lambda:
 
 ```csharp
 builder.Register(c =>
@@ -50,7 +50,7 @@ builder.Register(c =>
 });
 ```
 
-or we can continue using the ordinary `RegisterType<>()`, enhanced with the `withParameter()` facility:
+or you can continue using the ordinary `RegisterType<>()`, enhanced with the `withParameter()` facility:
 
 ```csharp
 builder.RegisterType<Foo>()
@@ -104,7 +104,7 @@ builder.Register(c =>
 
 The compiler wouldn't, and that's a pity;
 
-* `withParameter` references parameters by name, as a string, so simple refactoring tasks such as renaming variables become very fragile. The following code compiles, but it will throw an exception at runtime the moment we will try to resolve `Foo`:
+* `withParameter` references parameters by name, as a string, so simple refactoring tasks such as renaming variables become very fragile. The following code compiles, but it will throw an exception at runtime the moment you will try to resolve `Foo`:
 
 
 ```csharp
@@ -122,7 +122,7 @@ builder.RegisterType<Foo>()
 Yes, it's just a matter of a capitalized `S`. Hard to spot, isn't it?
 
 ## The illusory solution
-Why do you need to have configuration parameters, in the first place? Of course because we want the freedom to change them at runtime, presumably reading them from a configuration file:
+Why do you need to have configuration parameters, in the first place? Of course because you want the freedom to change them at runtime, presumably reading them from a configuration file:
 
 ```csharp
 var connectionString = ConfigurationManager.AppSetting["myConnection"];
@@ -231,5 +231,5 @@ builder.RegisterInstance(new BarServiceAuthParameters("http://some.url", "john",
 
 It's nice that it isn't anymore a business of `Foo` how to register parameters: for its point of view, parameters are just an ordinary dependency.
 
-This should give us a suggestion: if we only wrap any primitive parameter with a DTO class, we could fix the issue we described so far.
+This should give us a suggestion: if you only wrap any primitive parameter with a DTO class, you could fix the issue we described so far.
 
