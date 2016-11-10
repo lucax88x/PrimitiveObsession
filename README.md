@@ -57,7 +57,9 @@ builder.RegisterType<Foo>()
     .WithParameter("connectionString", "someConnectionString");
 ```
 
-This might be tollerable as long as there there are just a very little number of primitive dependencies. It starts stinking when it ends up with code like the following
+### Pain points
+
+This might be tollerable as long as there there are just a very little number of primitive dependencies. It starts stinking when it ends up with code like the following:
 
 
 ```csharp
@@ -82,7 +84,7 @@ builder.RegisterType<Foo>()
 	.WithParameter("maxUsers", 19);
 ```
 
-Not only is it verbose and repetitive, but the resulting code is also affected by a couple problems:
+Not only is it verbose and repetitive, but the resulting code is also affected by a couple of problems:
 
 * it is error prone: both the URL and the connectionString are represented with the same class (a string), so it is very possible to switch their value without any chances the receiving class detects the issue but at runtime; would you spot the problem in the following code?
 
