@@ -1,7 +1,7 @@
-AutoFac and Primitive obsession: how I learned to love the injection of configuration parameters
+Autofac and Primitive obsession: how I learned to love the injection of configuration parameters
 ================================================================================================
 
-Registering components in AutoFac is straightforward, as long as no primitive dependencies are involved. This post describes a technique for dealing with primitive dependencies, such as connection strings, URLs and configuration parameters in general.
+Registering components in Autofac is straightforward, as long as no primitive dependencies are involved. This post describes a technique for dealing with primitive dependencies, such as connection strings, URLs and configuration parameters in general.
 
 ## The ordinary case
 
@@ -24,9 +24,9 @@ builder.RegisterType<Foo>();
 builder.RegisterType<Bar>();
 ```
 
-This is enough for AutoFac, since it knows how to create instances of `Bar` (it's just a matter of invoking its default constructor), and consequently it knows how to build instances of `Foo`.
+This is enough for Autofac, since it knows how to create instances of `Bar` (it's just a matter of invoking its default constructor), and consequently it knows how to build instances of `Foo`.
 
-It works with no additional configurations even if dependencies are reversed (e.g `Bar` depends on `Foo`) or if relationships are implicit, for example when `Foo` depends on `Func<Bar>`, or on `List<Bar>` and the like: AutoFac is smart enough to build an instance of the right class and inject it into the right component.
+It works with no additional configurations even if dependencies are reversed (e.g `Bar` depends on `Foo`) or if relationships are implicit, for example when `Foo` depends on `Func<Bar>`, or on `List<Bar>` and the like: Autofac is smart enough to build an instance of the right class and inject it into the right component.
 
 ## Here come the primitives
 
@@ -273,7 +273,7 @@ In the the very short post [Primitive Obsession](http://wiki.c2.com/?PrimitiveOb
 
 So, it's likely that just by introducing the class `URL` you will end up enhancing it with some formatting or validation logic, which you could not do with a plain, primitive `string`.
 
-That's the first step to avoid convoluted registration expression with AutoFac.
+That's the first step to avoid convoluted registration expression with Autofac.
 Now, let's see how to make the solution nicer.
 
 ## Enhancing the solution
