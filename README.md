@@ -1,7 +1,7 @@
 Autofac and Primitive obsession: how I learned to love the injection of configuration parameters
 ================================================================================================
 
-Registering components in Autofac is straightforward, as long as no primitive dependencies are involved. This post describes a technique for dealing with primitive dependencies, such as connection strings, URLs and configuration parameters in general.
+Registering components in Autofac is straightforward, as long as no primitive dependencies (such as connection strings, URLs and configuration parameters in general) are involved. This post describes the strategy for dealing with primitive dependencies.
 
 ## The ordinary case
 
@@ -16,7 +16,8 @@ class Foo
 class Bar {}
 ```
 
-Registering both of them them is just simple as writing:
+Registering both of them
+with Autofac is just simple as writing:
 
 ```csharp
 var builder = new ContainerBuilder();
@@ -26,7 +27,7 @@ builder.RegisterType<Bar>();
 
 This is enough for Autofac, since it knows how to create instances of `Bar` (it's just a matter of invoking its default constructor), and consequently it knows how to build instances of `Foo`.
 
-It works with no additional configurations even if dependencies are reversed (e.g `Bar` depends on `Foo`) or if relationships are implicit, for example when `Foo` depends on `Func<Bar>`, or on `List<Bar>` and the like: Autofac is smart enough to build an instance of the right class and inject it into the right component.
+This works with no additional configurations even if dependencies are reversed (e.g `Bar` depends on `Foo`) or if relationships are implicit, for example when `Foo` depends on `Func<Bar>`, or on `List<Bar>` and the like: Autofac is smart enough to build an instance of the right class and inject it into the right component.
 
 ## Here come the primitives
 
@@ -39,7 +40,8 @@ class Foo
 }
 ```
 
-You are offered a bunch of native Autofac facilities for registering this class. Either you can use a lambda:
+You are offered a bunch of native Autofac facilities for registering this class.<br />
+Either you can use a lambda:
 
 ```csharp
 builder.Register(c =>
@@ -59,7 +61,8 @@ builder.RegisterType<Foo>()
 
 ### Pain points
 
-This might be tollerable as long as there there are just a very little number of primitive dependencies. It starts stinking when it ends up with code like the following:
+This is tollerable as long as there there are just a very little number of primitive dependencies.<br />
+It starts stinking when it ends up with code like the following:
 
 
 ```csharp
@@ -86,7 +89,8 @@ builder.RegisterType<Foo>()
 
 Not only is it verbose and repetitive, but the resulting code is also affected by a couple of problems:
 
-* both the URL and the connection string are represented with the same class (a string), giving no chances to the compiler to know which is which; consequently, it is very possible to switch their value without any chances the receiving class detects the issue but at runtime. Would you spot the problem in the following code?
+* both the URL and the connection string are represented with the same class (a string), giving no chances to the compiler to know which is which; consequently, it is very possible to switch their values without giving the receiving class the opportunity to detect the issue but at runtime.<br />
+Would you spot the problem in the following code?
 
 ```csharp
 class Foo
@@ -104,7 +108,8 @@ builder.Register(c =>
 
 The compiler wouldn't, and that's a pity;
 
-* `withParameter` references parameters by name, as a string, so simple refactoring tasks such as renaming variables become very fragile. The following code compiles, but it will throw an exception at runtime the moment you will try to resolve `Foo`:
+* `withParameter` references parameters by name, as a string, so simple refactoring tasks such as renaming variables become very fragile.<br />
+The following code compiles, but it will throw an exception at runtime the moment you will try to resolve `Foo`:
 
 
 ```csharp
@@ -121,6 +126,9 @@ builder.RegisterType<Foo>()
 
 Yes, it's just a matter of a capitalized `S`. Hard to spot, isn't it?
 
+The habit of using primitive types to represent domain ideas is a smell called *Primitive Obsession*.<br />
+Let's see how to avoid it without endng up with ugly Autofac registration statements.
+
 ## The illusory solution
 Why do you need to have configuration parameters, in the first place? Of course because you want the freedom to change them at runtime, presumably reading them from a configuration file:
 
@@ -135,7 +143,7 @@ builder.Register(c =>
 
 ```
 
-You suggests you a trick you could be tempted to use: to directly inject `ConfigurationManager.AppSetting` and solve so the dependency from primitive parameters.
+This may suggest you a trick you could be tempted to use: to get rid of the dependency from primitive parameters directly injecting `ConfigurationManager.AppSetting` into your classes.
 
 ```csharp
 class Foo
@@ -150,7 +158,8 @@ builder.RegisterType<Foo>();
 builder.RegisterInstance(ConfigurationManager.AppSetting).As<NameValueCollection>();
 ```
 
-Or may be you could be tempted to define a custom service for collecting all of your configuration parameters:
+Voilà. No more primitives.<br />
+You could also be tempted to define a custom service for collecting all of your configuration parameters:
 
 ```csharp
 class MyConfigs
@@ -170,7 +179,7 @@ builder.RegisterType<Foo>();
 builder.RegisterInstance(new MyConfig().LoadFromConfigfile());
 ```
 
-so that you can easily inject it into the classes that need one or more configuration parameters:
+so that you can easily inject it, instead of injecting primitive values:
 
 ```csharp
 class Foo
@@ -186,16 +195,16 @@ This seems to solve some of the problems related to Primitive Obsession, right?
 
 Well, it does. But, in fact, it also introduces some additional problems, possibly worse than the ones it is supposed to solve.
 
-The problem is, it's a Service Locator. I stronly suggest you to read the seminal Mark Seeman's post [Service Locator Is An Anti-Pattern](http://http://blog.ploeh.dk/2010/02/03/ServiceLocatorisanAnti-Pattern/) which collects a lot of reasons why you should avoid using of the Service Locator pattern. Basically, the root of Service Locator's evil is that id hides class dependencies, causing run-time errros and unneeded maintenance additional burden.
+The problem is: that's a Service Locator.<br />
+I stronly suggest you to read the seminal Mark Seeman's post [Service Locator Is An Anti-Pattern](http://http://blog.ploeh.dk/2010/02/03/ServiceLocatorisanAnti-Pattern/) which collects a lot of strong arguments why you should avoid using the Service Locator pattern. Basically, the root of Service Locator's evil is that it hides class dependencies, causing run-time errros and maintenance additional burden.
 
-Now, Service Locator is much more about services, while here we are dealing with configurazion parameters, values with no behaviour, simple strings and integers. Yet Mark Seeman's argument apply.
-
-Injecting a configuration-parameters locator is an anti-pattern. Just don't do it.
+Even if the Service Locator pattern is mostly used when retrieving services, while here we are dealing with values with no behaviour, simple strings and integers, yet Mark Seeman's argument apply: injecting a configuration-parameters locator is an anti-pattern.<br />
+Just don't do it.
 
 ## A hint
-So what to do? An idea may come from some special cases. There are times when configuration parameters come bundled together.
+So what to do? An idea may come from some special cases when configuration parameters come bundled together.
 
-Take a class `Foo` that requires the access to an external service `Bar` and therefore needs to receive the url, the username and the access token via injection. It may come natural to group the authentication parameters in a single class:
+Take a class `Foo` that requires the access an external service `Bar` and therefore needs to receive the url, the username and the access token via injection. It may come natural to group the 3 authentication parameters in a single `BarServiceAuthParameters` class:
 
 ```csharp
 class BarServiceAuthParameters
@@ -224,26 +233,39 @@ Now, registering `Foo` is just:
 builder.RegisterType<Foo>();
 ```
 
-since it doesn't depend on any primitives. All the burden is actually left to `BarServiceAuthParameters`, but this is also pretty straightforward, because it's just a matter of registering an instance, with no other dependencies:
+since it doesn't depend on any primitives. All the burden is actually left to `BarServiceAuthParameters`, but registering it is also pretty straightforward, because it's just a matter of providing Autofac with an instance, with no other dependencies:
 
 ```csharp
 builder.RegisterInstance(new BarServiceAuthParameters("http://some.url", "john", "token-123"));
 ```
 
-It's nice that it isn't anymore a business of `Foo` how to register parameters: for its point of view, parameters are just an ordinary dependency.
-
-This should give us a suggestion: if you only wrap any primitive parameter with a DTO class, you could fix the issue we described so far.
+It's nice how from `Foo`'s point of view, parameters are just an ordinary dependency.<br />
+This should give us a suggestion: by simply wrapping any primitive parameter with a DTO class, you completely avoid Primitive Obsession's issues.
 
 ## Winning the Primitive Obsession
-So, if you have a composite configuation (such as `BarServiceAuthParameters`), you already have a simple solution at hand. And there's the possibility to do the same for simpler, primitive configuration parameters too.
-
-You may be averse to creating small objects only for holding simple values such as connection strings, user names, integer or floating point levels or values  that you might simply represent with a prmitive type,
-
-Let me convince you that there is something wrong with injecting a primitive.
-Say you have 2 configuration parameters: `maxDownloadableFiles` and `numerOfItemsPerPage`. They are defined in 2 completely different contexts, yet you can represent both of them with an `int`.
+So, if you have a composite configuation parameters (such as `BarServiceAuthParameters`), the issue is already fixed, while for simpler, primitive configuration parameters you could do the same, with a dedicated wrapper class.
 
 
-The root error is to share the same class (in this case, an `int`) for the 2 completely different purposes. It would be just like having `CustomerController` and `NHibernateSession` represented by the very same class. Doing this, you would give no chance neither to Autofac nor to the compiler itself to distinguish the first from the second.
+```csharp
+class ConnectionString
+{
+    public string Value { get; }
+
+    public ConnectionString(string value)
+    {
+        Value = value;
+    }
+}
+```
+
+You might find it overengineering. You could be averse to creating those kinds of objects only for holding simple values such as connection strings, user names, integer or floating point levels or values  that you might simply represent with a prmitive type,
+
+Let me try to convince you that there is something deeply wrong with injecting a primitive.<br />
+Say you have 2 configuration parameters: `maxDownloadableFiles` and `numerOfItemsPerPage`. They can be defined in 2 completely different contexts, represent 2 completely different ideas, and have nothing to share one with the other.<br />
+Yet you can represent both of them with the same type, `int`.
+
+
+This is the root error: when you use the very same class for 2 completely different purposes, it's just like collapsing `CustomerController` and `NHibernateSession` to a single class. Doing this, you would give no chance neither to Autofac nor to the compiler itself to distinguish the former from the latter.
 
 You surely see the benefit in providing the customer controller and the NHibernate session with 2 dedicated classes: there wouldn't be hard to see the same benefit to using 2 different classes to the 2 configuration parameters. It would give you the opportunity to rely on the rely on the language: instead of having a constructor which takes 3 indistinguishable integers
 
@@ -274,6 +296,7 @@ In the the very short post [Primitive Obsession](http://wiki.c2.com/?PrimitiveOb
 So, it's likely that just by introducing the class `URL` you will end up enhancing it with some formatting or validation logic, which you could not do with a plain, primitive `string`.
 
 That's the first step to avoid convoluted registration expression with Autofac.
+
 Now, let's see how to make the solution nicer.
 
 ## Enhancing the solution
