@@ -121,10 +121,80 @@ builder.RegisterType<Foo>()
 
 Yes, it's just a matter of a capitalized `S`. Hard to spot, isn't it?
 
-## A hint
-There are cases where configuration parameters come bundled together.
+## The illusory solution
+Why do you need to have configuration parameters, in the first place? Of course because we want the freedom to change them at runtime, presumably reading them from a configuration file:
 
-Think for example to the case of a class `Foo` that requires the access to an external service `Bar`: `Foo` needs to receive the url, the username and the access token via injection. It may come natural to group the authentication parameters in a single class:
+```csharp
+var connectionString = ConfigurationManager.AppSetting["myConnection"];
+
+builder.Register(c =>
+{
+    var bar = c.Resolve<Bar>();
+    return new Foo(bar, connectionString);
+});
+
+```
+
+You suggests you a trick you could be tempted to use: to directly inject `ConfigurationManager.AppSetting` and solve so the dependency from primitive parameters.
+
+```csharp
+class Foo
+{
+    public Foo(Bar bar, NameValueCollection config)
+    {
+        var connectionString = config["myConnection"];
+    }
+}
+
+builder.RegisterType<Foo>();
+builder.RegisterInstance(ConfigurationManager.AppSetting).As<NameValueCollection>();
+```
+
+Or may be you could be tempted to define a custom service for collecting all of your configuration parameters:
+
+```csharp
+class MyConfigs
+{
+    public T Get<T>(string key)
+    {
+        ...
+    }
+
+    public void LoadFromConfigfile()
+    {
+        ...
+    }
+}
+
+builder.RegisterType<Foo>();
+builder.RegisterInstance(new MyConfig().LoadFromConfigfile());
+```
+
+so that you can easily inject it into the classes that need one or more configuration parameters:
+
+```csharp
+class Foo
+{
+    Foo(Bar bar, MyConfigs conf)
+    {
+        var maxUsers = conf.Get<int>("maxUsers");
+    }
+}
+```
+
+This seems to solve some of the problems related to Primitive Obsession, right?
+
+Well, it does. But, in fact, it also introduces some additional problems, possibly worse than the ones it is supposed to solve.
+
+The problem is, it's a Service Locator. I stronly suggest you to read the seminal Mark Seeman's post [Service Locator Is An Anti-Pattern](http://http://blog.ploeh.dk/2010/02/03/ServiceLocatorisanAnti-Pattern/) which collects a lot of reasons why you should avoid using of the Service Locator pattern. Basically, the root of Service Locator's evil is that id hides class dependencies, causing run-time errros and unneeded maintenance additional burden.
+
+Just don't use it.
+
+
+## A hint
+So what to do? An idea may come from some special cases. There are times when configuration parameters come bundled together.
+
+Take a class `Foo` that requires the access to an external service `Bar` and therefore needs to receive the url, the username and the access token via injection. It may come natural to group the authentication parameters in a single class:
 
 ```csharp
 class BarServiceAuthParameters
@@ -161,4 +231,5 @@ builder.RegisterInstance(new BarServiceAuthParameters("http://some.url", "john",
 
 It's nice that it isn't anymore a business of `Foo` how to register parameters: for its point of view, parameters are just an ordinary dependency.
 
-This should give us a suggestion: if we only wrap any primitive in a DTO class, we could fix the issue we described so far.
+This should give us a suggestion: if we only wrap any primitive parameter with a DTO class, we could fix the issue we described so far.
+
