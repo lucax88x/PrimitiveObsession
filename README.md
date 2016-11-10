@@ -10,12 +10,7 @@ Say we have a class `Foo` depending on `Bar`:
 ```csharp
 class Foo
 {
-    private readonly Bar _bar;
-
-    public Foo(Bar bar)
-    {
-        _bar = bar;
-    }
+    public Foo(Bar bar) { }
 }
 
 class Bar {}
