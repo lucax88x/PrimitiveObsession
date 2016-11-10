@@ -244,7 +244,7 @@ class MaxUsers : int { }
 
 ```
 
-Unfortunately, this isn't supported by C#. You must be more verbose and write something like:
+Unfortunately, this isn't supported by C#. You must rely on a  more verbose syntax and write something like:
 
 ```csharp
 class ConnectionString
@@ -267,12 +267,54 @@ builder.RegisterType<Foo>();
 builder.RegisterType<Bar>();
 ```
 
-This is the first step to avoid convoluted registration expression with AutoFac.
+
+Hopefully, C# 6 Primary Constructor shall reduce the glue code, allowing to replace definitions such as
+
+```csharp
+class BarServiceAuthParameters
+{
+    string Url { get; }
+    string Username { get; }
+    string AccessToken { get; }
+
+    public BarServiceAuthParameters(string url, string username, string accessToken)
+    {
+        Url = url;
+        Username = username;
+        AccessToken = accessToken;
+    }
+}
+
+```
+
+with
+
+```csharp
+
+class BarServiceAuthParameters(string url, string username, string accessToken) { }
+```
+
+which is much more terse and elegant.
+
+Anyway, that's the first step to avoid convoluted registration expression with AutoFac.
 
 
 ## Winning the Primitive Obsession
 
-You may be averse to creating small objects only for holding simple values that you might simply represent with a prmitive type, such as connection strings, user names, integer or floating point levels or values and the like. And 
+We can enhance the solution in a couple of ways, which will be shown in few lines, but before delving into details, let's elaborate on the Primitive Obsession: what is it, and in which way is it detrimental to the quality of code.
+
+In fact, you may be averse to creating small objects only for holding simple values such as connection strings, user names, integer or floating point levels or values  that you might simply represent with a prmitive type, 
+Chances are you don't see the use of primitives as a big issue after all.
 
 
-DDD calls them Value Object.
+
+The common solution is just to wrap the primitives in DTO class: DDD calls them Value Object. In the short post [Primitive Obsession](http://wiki.c2.com/?PrimitiveObsession) Jb Rainsberger claims those kind of Vlaue Object
+
+
+> [...] become "attractive code", meaning literally a class/module that attracts behavior towards it as new methods/functions. For example, instead of scattering all the parsing/formatting behavior for dates stored as text, introduce a DateFormat class which attracts that behavior as methods called parse() and format(), almost like magic.
+
+So, it's likely that just by introducing the class `URL` you will end up enhancing it with some formatting or validation logic, which you could not do with a plain, primitive `string`.
+
+
+## Enhancing the solution
+
