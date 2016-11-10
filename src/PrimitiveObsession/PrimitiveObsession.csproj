@@ -51,10 +51,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Baz.cs" />
+    <Compile Include="Components.cs" />
     <Compile Include="Config\ConnectionString.cs" />
     <Compile Include="IoC\PrimitiveObsessionModule.cs" />
-    <Compile Include="Foo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
