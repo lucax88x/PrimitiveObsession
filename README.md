@@ -263,20 +263,18 @@ class Foo
 }
 ````
 
+So, the basic trick for dealing with primitives in Autofac is: don't use primitives. Instead, use DTO that wrap one or multiple primitive values. DDD calls those DTO Value Object. Be explicit: [explicit is better than implicit](https://www.python.org/dev/peps/pep-0020/).
 
-That's the first step to avoid convoluted registration expression with AutoFac.
-
-
-We can enhance the solution in a couple of ways, which will be shown in few lines, but before delving into details, let's elaborate on the Primitive Obsession: what is it, and in which way is it detrimental to the quality of code.
-
-
-The common solution is just to wrap the primitives in DTO class: DDD calls them Value Object. In the the very short post [Primitive Obsession](http://wiki.c2.com/?PrimitiveObsession) Jb Rainsberger claims those kind of Vlaue Object
+In the the very short post [Primitive Obsession](http://wiki.c2.com/?PrimitiveObsession) Jb Rainsberger claims those kind of Vlaue Object
 
 
 > [...] become "attractive code", meaning literally a class/module that attracts behavior towards it as new methods/functions. For example, instead of scattering all the parsing/formatting behavior for dates stored as text, introduce a DateFormat class which attracts that behavior as methods called parse() and format(), almost like magic.
 
+
 So, it's likely that just by introducing the class `URL` you will end up enhancing it with some formatting or validation logic, which you could not do with a plain, primitive `string`.
 
+That's the first step to avoid convoluted registration expression with AutoFac.
+Now, let's see how to make the solution nicer.
 
 ## Enhancing the solution
 
