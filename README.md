@@ -86,7 +86,7 @@ builder.RegisterType<Foo>()
 
 Not only is it verbose and repetitive, but the resulting code is also affected by a couple of problems:
 
-* it is error prone: both the URL and the connectionString are represented with the same class (a string), so it is very possible to switch their value without any chances the receiving class detects the issue but at runtime; would you spot the problem in the following code?
+* both the URL and the connection string are represented with the same class (a string), giving no chances to the compiler to know which is which; consequently, it is very possible to switch their value without any chances the receiving class detects the issue but at runtime. Would you spot the problem in the following code?
 
 ```csharp
 class Foo
@@ -104,8 +104,7 @@ builder.Register(c =>
 
 The compiler wouldn't, and that's a pity;
 
-* `withParameter` references parameters by names, as strings, so simple refactoring tasks such as renaming variables become very fragile;
-The following code compiles, but throws an exception at runtime the moment we will try to resolve `Foo`:
+* `withParameter` references parameters by name, as a string, so simple refactoring tasks such as renaming variables become very fragile. The following code compiles, but it will throw an exception at runtime the moment we will try to resolve `Foo`:
 
 
 ```csharp
