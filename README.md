@@ -39,7 +39,7 @@ class Foo
 }
 ```
 
-We are offered a bunch of native Autofac facilities for registering this class. Either we can use lambdas
+We are offered a bunch of native Autofac facilities for registering this class. Either we can use a lambda:
 
 ```csharp
 builder.Register(c =>
