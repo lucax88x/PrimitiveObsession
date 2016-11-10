@@ -237,17 +237,34 @@ This should give us a suggestion: if you only wrap any primitive parameter with 
 ## Winning the Primitive Obsession
 So, if you have a composite configuation (such as `BarServiceAuthParameters`), you already have a simple solution at hand. And there's the possibility to do the same for simpler, primitive configuration parameters too.
 
-There is something wrong in injecting a primitive.
+You may be averse to creating small objects only for holding simple values such as connection strings, user names, integer or floating point levels or values  that you might simply represent with a prmitive type,
+
+Let me convince you that there is something wrong with injecting a primitive.
 Say you have 2 configuration parameters: `maxDownloadableFiles` and `numerOfItemsPerPage`. They are defined in 2 completely different contexts, yet you can represent both of them with an `int`.
 
 
 The root error is to share the same class (in this case, an `int`) for the 2 completely different purposes. It would be just like having `CustomerController` and `NHibernateSession` represented by the very same class. Doing this, you would give no chance neither to Autofac nor to the compiler itself to distinguish the first from the second.
 
-You surely see the benefit in providing the customer controller and the NHibernate session with 2 dedicated classes: there wouldn't be hard to see the same benefit to using 2 different classes to the 2 configuration parameters. 
+You surely see the benefit in providing the customer controller and the NHibernate session with 2 dedicated classes: there wouldn't be hard to see the same benefit to using 2 different classes to the 2 configuration parameters. It would give you the opportunity to rely on the rely on the language: instead of having a constructor which takes 3 indistinguishable integers
 
-In fact, you may be averse to creating small objects only for holding simple values such as connection strings, user names, integer or floating point levels or values  that you might simply represent with a prmitive type,
+```csharp
+class Foo
+{
+    public Foo(int maxDownloads, int itemsPerPage, int numberOfDays) { ... }
+}
+````
 
-Anyway, that's the first step to avoid convoluted registration expression with AutoFac.
+you would actually have a maximum number of downloads, a number of items per page and a number of days, each well defined with its specific class, just like everything else:
+
+```csharp
+class Foo
+{
+    public Foo(MaxDownloads maxDownloads, ItemsPerPage itemsPerPage, NumberOfDays numberOfDays) { ... }
+}
+````
+
+
+That's the first step to avoid convoluted registration expression with AutoFac.
 
 
 We can enhance the solution in a couple of ways, which will be shown in few lines, but before delving into details, let's elaborate on the Primitive Obsession: what is it, and in which way is it detrimental to the quality of code.
