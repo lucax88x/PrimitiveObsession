@@ -1,5 +1,5 @@
-AutoFac and Primitive obsession: how I learned to love injecting configurations
-===============================================================================
+AutoFac and Primitive obsession: how I learned to love the injection of configuration parameters
+================================================================================================
 
 Registering components in AutoFac is straightforward, as long as no primitive dependencies are involved. This post describes a technique for dealing with primitive dependencies, such as connection strings, URLs and configuration parameters in general.
 
@@ -318,3 +318,89 @@ So, it's likely that just by introducing the class `URL` you will end up enhanci
 
 ## Enhancing the solution
 
+There are drawbacks with Value Object.
+
+Say you replace `string ConnectionString` with a wrapper class
+
+```csharp
+class ConnectionString
+{
+    public string Value { get; }
+
+    public ConnectionString(string value)
+    {
+        Value = value;
+    }
+}
+```
+
+Now it's just more difficult to consume it. You need to write
+
+```csharp
+connectionString.Value
+```
+
+where it used to be just
+
+```csharp
+connectionString
+```
+
+since it's not a string anymore. It's also more difficult to assign it a value. Instead of
+
+```csharp
+var connectionString = "foobar";
+```
+
+you need
+
+```csharp
+var connectionString = new ConnectionString("foobar"); 
+```
+
+Yawn...
+
+It would be nice if it were possible to implicitly cast it from and to strings.
+
+### `implicit` and `explicit` to the resque
+Actually, that's not too hard to achieve. There is a technique Jimmy Bogard brillantly exposed in his post [Dealing with primitive obsession](https://lostechies.com/jimmybogard/2007/12/03/dealing-with-primitive-obsession) that  makes a smart use of the cast operators `implicit` and `explicit` and allows to make you consume and create your Value Objects as they are primitives.
+
+Go and read the post. You will learn that by defining your Value Object as
+
+```csharp
+public class ConnectionString
+{
+    public string Value { get; }
+
+    public ConnectionString(string value)
+    {
+        Value = value;
+    }
+
+    public static implicit operator string(ConnectionString connectionString)
+    {
+        return connectionString.Value;
+    }
+
+    public static explicit operator ConnectionString(string value)
+    {
+        return new ConnectionString(value);
+    }
+}
+```
+
+you will be able to consume and create it as a primitive, as in the following example:
+
+```csharp
+
+class Foo
+{
+    public ConnectionString Conn;
+}
+
+
+var foo = new Foo();
+foo.Conn = (ConnectionString) "barbaz";
+
+string s = foo.Conn;
+```
