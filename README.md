@@ -120,3 +120,45 @@ builder.RegisterType<Foo>()
 ```
 
 Yes, it's just a matter of a capitalized `S`. Hard to spot, isn't it?
+
+## A hint
+There are cases where configuration parameters come bundled together.
+
+Think for example to the case of a class `Foo` that requires the access to an external service `Bar`: `Foo` needs to receive the url, the username and the access token via injection. It may come natural to group the authentication parameters in a single class:
+
+```csharp
+class BarServiceAuthParameters
+{
+    string Url { get; }
+    string Username { get; }
+    string AccessToken { get; }
+
+    public BarServiceAuthParameters(string url, string username, string accessToken)
+    {
+        Url = url;
+        Username = username;
+        AccessToken = accessToken;
+    }
+}
+
+class Foo
+{
+    public Foo(BarServiceAuthParameters authParams) { }
+}
+```
+
+Now, registering `Foo` is just:
+
+```csharp
+builder.RegisterType<Foo>();
+```
+
+since it doesn't depend on any primitives. All the burden is actually left to `BarServiceAuthParameters`, but this is also pretty straightforward, because it's just a matter of registering an instance, with no other dependencies:
+
+```csharp
+builder.RegisterInstance(new BarServiceAuthParameters("http://some.url", "john", "token-123"));
+```
+
+It's nice that it isn't anymore a business of `Foo` how to register parameters: for its point of view, parameters are just an ordinary dependency.
+
+This should give us a suggestion: if we only wrap any primitive in a DTO class, we could fix the issue we described so far.
