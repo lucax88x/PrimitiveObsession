@@ -233,3 +233,46 @@ It's nice that it isn't anymore a business of `Foo` how to register parameters: 
 
 This should give us a suggestion: if you only wrap any primitive parameter with a DTO class, you could fix the issue we described so far.
 
+## Getting to the solution
+
+If only primitive types weren't not sealed, a solution could even be:
+
+```csharp
+class ConnectionString : string { }
+class Url : string { }
+class MaxUsers : int { }
+
+```
+
+Unfortunately, this isn't supported by C#. You must be more verbose and write something like:
+
+```csharp
+class ConnectionString
+{
+    public string Value { get; }
+
+    public ConnectionString(string value)
+    {
+        Value = value;
+    }
+}
+
+class Foo
+{
+    public Foo(Bar bar, ConnectionString connectionString) { }
+}
+
+builder.RegisterInstance(new ConnectionString("some value"));
+builder.RegisterType<Foo>();
+builder.RegisterType<Bar>();
+```
+
+This is the first step to avoid convoluted registration expression with AutoFac.
+
+
+## Winning the Primitive Obsession
+
+You may be averse to creating small objects only for holding simple values that you might simply represent with a prmitive type, such as connection strings, user names, integer or floating point levels or values and the like. And 
+
+
+DDD calls them Value Object.
