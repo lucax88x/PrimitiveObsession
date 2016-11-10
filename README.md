@@ -188,8 +188,9 @@ Well, it does. But, in fact, it also introduces some additional problems, possib
 
 The problem is, it's a Service Locator. I stronly suggest you to read the seminal Mark Seeman's post [Service Locator Is An Anti-Pattern](http://http://blog.ploeh.dk/2010/02/03/ServiceLocatorisanAnti-Pattern/) which collects a lot of reasons why you should avoid using of the Service Locator pattern. Basically, the root of Service Locator's evil is that id hides class dependencies, causing run-time errros and unneeded maintenance additional burden.
 
-Just don't use it.
+Now, Service Locator is much more about services, while here we are dealing with configurazion parameters, values with no behaviour, simple strings and integers. Yet Mark Seeman's argument apply.
 
+Injecting a configuration-parameters locator is an anti-pattern. Just don't do it.
 
 ## A hint
 So what to do? An idea may come from some special cases. There are times when configuration parameters come bundled together.
@@ -233,7 +234,80 @@ It's nice that it isn't anymore a business of `Foo` how to register parameters: 
 
 This should give us a suggestion: if you only wrap any primitive parameter with a DTO class, you could fix the issue we described so far.
 
-## Getting to the solution
+## Winning the Primitive Obsession
+So, if you have a composite configuation (such as `BarServiceAuthParameters`), you already have a simple solution at hand. And there's the possibility to do the same for simpler, primitive configuration parameters too.
+
+There is something wrong in injecting a primitive.
+Say you have 2 configuration parameters: `maxDownloadableFiles` and `numerOfItemsPerPage`. They are defined in 2 completely different contexts, yet you can represent both of them with an `int`.
+
+
+The root error is to share the same class (in this case, an `int`) for the 2 completely different purposes. It would be just like having `CustomerController` and `NHibernateSession` represented by the very same class. Doing this, you would give no chance neither to Autofac nor to the compiler itself to distinguish the first from the second.
+
+You surely see the benefit in providing the customer controller and the NHibernate session with 2 dedicated classes: there wouldn't be hard to see the same benefit to using 2 different classes to the 2 configuration parameters. 
+
+In fact, you may be averse to creating small objects only for holding simple values such as connection strings, user names, integer or floating point levels or values  that you might simply represent with a prmitive type,
+
+Anyway, that's the first step to avoid convoluted registration expression with AutoFac.
+
+
+We can enhance the solution in a couple of ways, which will be shown in few lines, but before delving into details, let's elaborate on the Primitive Obsession: what is it, and in which way is it detrimental to the quality of code.
+
+
+The common solution is just to wrap the primitives in DTO class: DDD calls them Value Object. In the the very short post [Primitive Obsession](http://wiki.c2.com/?PrimitiveObsession) Jb Rainsberger claims those kind of Vlaue Object
+
+
+> [...] become "attractive code", meaning literally a class/module that attracts behavior towards it as new methods/functions. For example, instead of scattering all the parsing/formatting behavior for dates stored as text, introduce a DateFormat class which attracts that behavior as methods called parse() and format(), almost like magic.
+
+So, it's likely that just by introducing the class `URL` you will end up enhancing it with some formatting or validation logic, which you could not do with a plain, primitive `string`.
+
+
+## Enhancing the solution
+
+There are drawbacks with Value Object.
+
+Say you replace `string ConnectionString` with a wrapper class
+
+```csharp
+class ConnectionString
+{
+    public string Value { get; }
+
+    public ConnectionString(string value)
+    {
+        Value = value;
+    }
+}
+```
+
+Now it's just more difficult to consume it. You need to write
+
+```csharp
+connectionString.Value
+```
+
+where it used to be just
+
+```csharp
+connectionString
+```
+
+since it's not a string anymore. It's also more difficult to assign it a value. Instead of
+
+```csharp
+var connectionString = "foobar";
+```
+
+you need
+
+```csharp
+var connectionString = new ConnectionString("foobar"); 
+```
+
+Yawn...
+
+
+### Extending Primitives and Primary Constructors
+
 
 If only primitive types weren't not sealed, a solution could even be:
 
@@ -296,73 +370,10 @@ class BarServiceAuthParameters(string url, string username, string accessToken) 
 
 which is much more terse and elegant.
 
-Anyway, that's the first step to avoid convoluted registration expression with AutoFac.
-
-
-## Winning the Primitive Obsession
-
-We can enhance the solution in a couple of ways, which will be shown in few lines, but before delving into details, let's elaborate on the Primitive Obsession: what is it, and in which way is it detrimental to the quality of code.
-
-In fact, you may be averse to creating small objects only for holding simple values such as connection strings, user names, integer or floating point levels or values  that you might simply represent with a prmitive type, 
-Chances are you don't see the use of primitives as a big issue after all.
-
-
-
-The common solution is just to wrap the primitives in DTO class: DDD calls them Value Object. In the short post [Primitive Obsession](http://wiki.c2.com/?PrimitiveObsession) Jb Rainsberger claims those kind of Vlaue Object
-
-
-> [...] become "attractive code", meaning literally a class/module that attracts behavior towards it as new methods/functions. For example, instead of scattering all the parsing/formatting behavior for dates stored as text, introduce a DateFormat class which attracts that behavior as methods called parse() and format(), almost like magic.
-
-So, it's likely that just by introducing the class `URL` you will end up enhancing it with some formatting or validation logic, which you could not do with a plain, primitive `string`.
-
-
-## Enhancing the solution
-
-There are drawbacks with Value Object.
-
-Say you replace `string ConnectionString` with a wrapper class
-
-```csharp
-class ConnectionString
-{
-    public string Value { get; }
-
-    public ConnectionString(string value)
-    {
-        Value = value;
-    }
-}
-```
-
-Now it's just more difficult to consume it. You need to write
-
-```csharp
-connectionString.Value
-```
-
-where it used to be just
-
-```csharp
-connectionString
-```
-
-since it's not a string anymore. It's also more difficult to assign it a value. Instead of
-
-```csharp
-var connectionString = "foobar";
-```
-
-you need
-
-```csharp
-var connectionString = new ConnectionString("foobar"); 
-```
-
-Yawn...
-
-It would be nice if it were possible to implicitly cast it from and to strings.
 
 ### `implicit` and `explicit` to the resque
+There's another path to explore: it would be nice if it were possible to implicitly cast it from and to strings.
+
 Actually, that's not too hard to achieve. There is a technique Jimmy Bogard brillantly exposed in his post [Dealing with primitive obsession](https://lostechies.com/jimmybogard/2007/12/03/dealing-with-primitive-obsession) that  makes a smart use of the cast operators `implicit` and `explicit` and allows to make you consume and create your Value Objects as they are primitives.
 
 Go and read the post. You will learn that by defining your Value Object as
