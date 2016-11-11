@@ -126,11 +126,11 @@ builder.RegisterType<Foo>()
 
 Yes, it's just a matter of a capitalized `S`. Hard to spot, isn't it?
 
-The habit of using primitive types to represent domain ideas is a smell called *Primitive Obsession*.<br />
+The bad habit of using primitive types to represent domain ideas is a smell called *Primitive Obsession*.<br />
 Let's see how to avoid it without endng up with ugly Autofac registration statements.
 
 ## The illusory solution
-Why do you need to have configuration parameters, in the first place? Of course because you want the freedom to change them at runtime, presumably reading them from a configuration file:
+Why do you need to have configuration parameters, in the first place? Of course because you want the freedom to change them at runtime, presumably by using a configuration file:
 
 ```csharp
 var connectionString = ConfigurationManager.AppSetting["myConnection"];
@@ -143,7 +143,7 @@ builder.Register(c =>
 
 ```
 
-This may suggest you a trick you could be tempted to use: to get rid of the dependency from primitive parameters directly injecting `ConfigurationManager.AppSetting` into your classes.
+This may suggest you a trick you could be tempted to use: to directly inject `ConfigurationManager.AppSetting` into your classes:
 
 ```csharp
 class Foo
@@ -159,7 +159,7 @@ builder.RegisterInstance(ConfigurationManager.AppSetting).As<NameValueCollection
 ```
 
 Voilà. No more primitives.<br />
-You could also be tempted to define a custom service for collecting all of your configuration parameters:
+You could also be inclined to define a custom service for collecting all of your configuration parameters:
 
 ```csharp
 class MyConfigs
@@ -179,7 +179,7 @@ builder.RegisterType<Foo>();
 builder.RegisterInstance(new MyConfig().LoadFromConfigfile());
 ```
 
-so that you can easily inject it, instead of injecting primitive values:
+so that you can easily inject it, as a glorified configuration parameters repository:
 
 ```csharp
 class Foo
@@ -191,9 +191,9 @@ class Foo
 }
 ```
 
-This seems to solve some of the problems related to Primitive Obsession, right?
+This seems to solve most of the problems related to Primitive Obsession, right?
 
-Well, it does. But, in fact, it also introduces some additional problems, possibly worse than the ones it is supposed to solve.
+Well, yes, at least it solves the ugly Autofac registration statements issue. In fact, it introduces some additional problems, possibly worse than the ones it is supposed to solve.
 
 The problem is: that's a Service Locator.<br />
 I stronly suggest you to read the seminal Mark Seeman's post [Service Locator Is An Anti-Pattern](http://http://blog.ploeh.dk/2010/02/03/ServiceLocatorisanAnti-Pattern/) which collects a lot of strong arguments why you should avoid using the Service Locator pattern. Basically, the root of Service Locator's evil is that it hides class dependencies, causing run-time errros and maintenance additional burden.
