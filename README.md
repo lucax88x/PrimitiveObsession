@@ -6,7 +6,7 @@ Registering components in Autofac is straightforward, as long as no primitive de
 * [The Ordinary Case](#the-ordinary-case)  
 * [Here come the primitives](#here-come-the-primitives)
     * [Pain points](#pain-points)
-* [The illusory solution](#the-illusory-solution)
+* [The illusory solutions](#the-illusory-solutions)
 * [Winning the primitive obsession](#winning-the-primitive-obsession)
     * [Extending Primitives and Primary Constructors](#extending-primitives-and-primary-constructors)
     * [`implicit` and `explicit` to the resque](#implicit-and-explicit-to-the-resque)
@@ -137,7 +137,7 @@ Yes, it's just a matter of a capitalized `S`. Hard to spot, isn't it?
 The bad habit of using primitive types to represent domain ideas is a smell called *Primitive Obsession*.<br />
 Let's see how to avoid it without endng up with ugly Autofac registration statements.
 
-## The illusory solution
+## The illusory solutions
 Why do you need to have configuration parameters, in the first place? Of course because you want the freedom to change them at runtime, presumably by using a configuration file:
 
 ```csharp
