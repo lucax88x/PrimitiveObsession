@@ -3,6 +3,14 @@ Autofac and Primitive obsession: how I learned to love the injection of configur
 
 Registering components in Autofac is straightforward, as long as no primitive dependencies (such as connection strings, URLs and configuration parameters in general) are involved. This post describes the strategy for dealing with primitive dependencies.
 
+* [The Ordinary Case](#the-ordinary-case)  
+* [Here come the primitives](#here-come-the-primitives)
+    * [Pain points](#pain-points)
+* [The illusory solution](#the-illusory-solution)
+* [A hint](#a-hint)
+* [Winning the primitive obsession](#winning-the-primitive-obsession)
+* [Extending Primitives and Primary Constructors](#extending-primitives-and-primary-constructors)
+
 ## The ordinary case
 
 Say you have a class `Foo` depending on `Bar`: 
@@ -199,7 +207,8 @@ The problem is: that's a Service Locator.<br />
 I stronly suggest you to read the seminal Mark Seemann's post [Service Locator Is An Anti-Pattern](http://blog.ploeh.dk/2010/02/03/ServiceLocatorisanAnti-Pattern/) which collects a lot of strong arguments on why you should avoid using the Service Locator pattern. Basically, the root of Service Locator's evil is that it hides class dependencies, causing run-time errros and maintenance additional burden.
 
 Service Locator pattern is mostly applied with services, while here you are dealing with values without behaviour, simple strings and integers; yet Mark Seemann's argument apply: injecting a configuration-parameters locator is an anti-pattern anyway.<br />
-Just don't do it.
+
+**Just don't do it.**
 
 ## A hint
 So what to do? An idea may come from some special cases when configuration parameters come bundled together.
