@@ -166,7 +166,7 @@ builder.RegisterType<Foo>();
 builder.RegisterInstance(ConfigurationManager.AppSetting).As<NameValueCollection>();
 ```
 
-Voil�. No more primitives.<br />
+Voilà. No more primitives.<br />
 You could also be inclined to define a custom service for collecting all of your configuration parameters:
 
 ```csharp
@@ -333,8 +333,6 @@ foo.Conn = (ConnectionString) "barbaz";
 
 string s = foo.Conn;
 ```
-
-
 ### Result Achieved
 
 list of advantages
