@@ -8,7 +8,7 @@ Registering components in Autofac is straightforward, as long as no primitive de
     * [Pain points](#pain-points)
 * [The illusory solutions](#the-illusory-solutions)
 * [Winning the primitive obsession](#winning-the-primitive-obsession)
-    * [Extending Primitives and Primary Constructors](#extending-primitives-and-primary-constructors)
+    * [Value Object in action](#value-object-in-action)
     * [`implicit` and `explicit` to the resque](#implicit-and-explicit-to-the-resque)
 
 ## The ordinary case
@@ -211,31 +211,14 @@ Service Locator pattern is mostly applied with services, while here you are deal
 **Just don't do it.**
 
 ## Winning the Primitive Obsession
-So, if you have a composite configuration parameters (such as `BarServiceAuthParameters`), the issue is already fixed, while for simpler, primitive configuration parameters you could do the same, with a dedicated wrapper class.
-
-
-```csharp
-class ConnectionString
-{
-    public string Value { get; }
-
-    public ConnectionString(string value)
-    {
-        Value = value;
-    }
-}
-```
-
-You might find it overengineering. You could be averse to creating those kinds of objects only for holding simple values such as connection strings, user names, integer or floating point levels or values  that you might simply represent with a prmitive type,
 
 Let me try to convince you that there is something deeply wrong with injecting a primitive.<br />
 Say you have 2 configuration parameters: `maxDownloadableFiles` and `numerOfItemsPerPage`. They can be defined in 2 completely different contexts, represent 2 completely different ideas, and have nothing to share one with the other.<br />
 Yet you can represent both of them with the same type, `int`.
 
-
 This is the root error: when you use the very same class for 2 completely different purposes, it's just like collapsing `CustomerController` and `NHibernateSession` to a single class. Doing this, you would give no chance neither to Autofac nor to the compiler itself to distinguish the former from the latter.
 
-You surely see the benefit in providing the customer controller and the NHibernate session with 2 dedicated classes: there wouldn't be hard to see the same benefit to using 2 different classes to the 2 configuration parameters. It would give you the opportunity to rely on the rely on the language: instead of having a constructor which takes 3 indistinguishable integers
+You surely see the benefit in providing the customer controller and the NHibernate session with 2 dedicated classes: there wouldn't be hard to see the same benefit to using 2 different classes to the 2 configuration parameters. It would give you the opportunity to rely on the rely on the language: instead of having a constructor which takes 3 indistinguishable integers.
 
 ```csharp
 class Foo
@@ -253,25 +236,19 @@ class Foo
 }
 ````
 
-So, the basic trick for dealing with primitives in Autofac is: don't use primitives. Instead, use DTO that wrap one or multiple primitive values. DDD calls those DTO Value Object. Be explicit: [explicit is better than implicit](https://www.python.org/dev/peps/pep-0020/).
+So, the basic trick for dealing with primitives in Autofac is: **don't use primitives**. Instead, use DTO that wrap one or multiple primitive values. DDD calls those DTO Value Object.
 
 In the the very short post [Primitive Obsession](http://wiki.c2.com/?PrimitiveObsession) Jb Rainsberger claims those kind of Vlaue Object
 
-
 > [...] become "attractive code", meaning literally a class/module that attracts behavior towards it as new methods/functions. For example, instead of scattering all the parsing/formatting behavior for dates stored as text, introduce a DateFormat class which attracts that behavior as methods called parse() and format(), almost like magic.
-
 
 So, it's likely that just by introducing the class `URL` you will end up enhancing it with some formatting or validation logic, which you could not do with a plain, primitive `string`.
 
-That's the first step to avoid convoluted registration expression with Autofac.
+### Value Object in action
 
-Now, let's see how to make the solution nicer.
+Let's see how would be a configuration parameter with a Value Object.
 
-## Enhancing the solution
-
-There are drawbacks with Value Object.
-
-Say you replace `string ConnectionString` with a wrapper class
+Say you replace `string ConnectionString` with a wrapper class:
 
 ```csharp
 class ConnectionString
@@ -285,7 +262,7 @@ class ConnectionString
 }
 ```
 
-Now it's just more difficult to consume it. You need to write
+Also this solution has it's drawbacks, now it's just more difficult to consume it. You need to write:
 
 ```csharp
 connectionString.Value
@@ -309,75 +286,10 @@ you need
 var connectionString = new ConnectionString("foobar"); 
 ```
 
-Yawn...
+*Yawn...*
 
+### Enhancing the solution
 
-### Extending Primitives and Primary Constructors
-
-
-If only primitive types weren't not sealed, a solution could even be:
-
-```csharp
-class ConnectionString : string { }
-class Url : string { }
-class MaxUsers : int { }
-
-```
-
-Unfortunately, this isn't supported by C#. You must rely on a  more verbose syntax and write something like:
-
-```csharp
-class ConnectionString
-{
-    public string Value { get; }
-
-    public ConnectionString(string value)
-    {
-        Value = value;
-    }
-}
-
-class Foo
-{
-    public Foo(Bar bar, ConnectionString connectionString) { }
-}
-
-builder.RegisterInstance(new ConnectionString("some value"));
-builder.RegisterType<Foo>();
-builder.RegisterType<Bar>();
-```
-
-
-Hopefully, C# 6 Primary Constructor shall reduce the glue code, allowing to replace definitions such as
-
-```csharp
-class BarServiceAuthParameters
-{
-    string Url { get; }
-    string Username { get; }
-    string AccessToken { get; }
-
-    public BarServiceAuthParameters(string url, string username, string accessToken)
-    {
-        Url = url;
-        Username = username;
-        AccessToken = accessToken;
-    }
-}
-
-```
-
-with
-
-```csharp
-
-class BarServiceAuthParameters(string url, string username, string accessToken) { }
-```
-
-which is much more terse and elegant.
-
-
-### `implicit` and `explicit` to the resque
 There's another path to explore: it would be nice if it were possible to implicitly cast it from and to strings.
 
 Actually, that's not too hard to achieve. There is a technique Jimmy Bogard brillantly exposed in his post [Dealing with primitive obsession](https://lostechies.com/jimmybogard/2007/12/03/dealing-with-primitive-obsession) that  makes a smart use of the cast operators `implicit` and `explicit` and allows to make you consume and create your Value Objects as they are primitives.
@@ -421,3 +333,10 @@ foo.Conn = (ConnectionString) "barbaz";
 
 string s = foo.Conn;
 ```
+
+
+### Result Achieved
+
+list of advantages
+
+modules are nicer to read, refactor is easy, you cannot pass wrong arguments, you can add some validations on the type
