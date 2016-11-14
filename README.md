@@ -4,14 +4,16 @@ Autofac and Primitive obsession: how I learned to love the injection of configur
 Registering components in Autofac is straightforward, as long as no primitive dependencies (such as connection strings, URLs and configuration parameters in general) are involved. This post describes the strategy for dealing with primitive dependencies.
 
 * [The Ordinary Case](#the-ordinary-case)  
-* [Here come the primitives](#here-come-the-primitives)
-    * [Pain points](#pain-points)
-* [The illusory solutions](#the-illusory-solutions)
-* [Winning the primitive obsession](#winning-the-primitive-obsession)
-    * [Value Object in action](#value-object-in-action)
-    * [`implicit` and `explicit` to the resque](#implicit-and-explicit-to-the-resque)
+* [Here Come The Primitives](#here-come-the-primitives)
+* [Pain Points](#pain-points)
+* [The Illusory Solutions](#the-illusory-solutions)
+* [Winning The Primitive Obsession](#winning-the-primitive-obsession)
+* [Value Object In Action](#value-object-in-action)
+* [Enhancing The Solution](#enhancing-the-solution)
+* [`implicit` and `explicit` To The Resque](#implicit-and-explicit-to-the-resque)
+* [Result Achieved](#result-achieved)
 
-## The ordinary case
+## The Ordinary Case
 
 Say you have a class `Foo` depending on `Bar`: 
 
@@ -37,7 +39,7 @@ This is enough for Autofac, since it knows how to create instances of `Bar` (it'
 
 This works with no additional configurations even if dependencies are reversed (e.g `Bar` depends on `Foo`) or if relationships are implicit, for example when `Foo` depends on `Func<Bar>`, or on `List<Bar>` and the like: Autofac is smart enough to build an instance of the right class and inject it into the right component.
 
-## Here come the primitives
+## Here Come The Primitives
 
 Troubles start when one of the dependencies is a primitive. Suppose that `Foo` also depends on a connection string, which you decided to represent as a `string`:
 
@@ -67,7 +69,7 @@ builder.RegisterType<Foo>()
     .WithParameter("connectionString", "someConnectionString");
 ```
 
-### Pain points
+### Pain Points
 
 This is tollerable as long as there there are just a very little number of primitive dependencies.<br />
 It starts stinking when it ends up with code like the following:
@@ -137,7 +139,7 @@ Yes, it's just a matter of a capitalized `S`. Hard to spot, isn't it?
 The bad habit of using primitive types to represent domain ideas is a smell called *Primitive Obsession*.<br />
 Let's see how to avoid it without endng up with ugly Autofac registration statements.
 
-## The illusory solutions
+## The Illusory Solutions
 Why do you need to have configuration parameters, in the first place? Of course because you want the freedom to change them at runtime, presumably by using a configuration file:
 
 ```csharp
@@ -210,7 +212,7 @@ Service Locator pattern is mostly applied with services, while here you are deal
 
 **Just don't do it.**
 
-## Winning the Primitive Obsession
+## Winning The Primitive Obsession
 
 Let me try to convince you that there is something deeply wrong with injecting a primitive.<br />
 Say you have 2 configuration parameters: `maxDownloadableFiles` and `numerOfItemsPerPage`. They can be defined in 2 completely different contexts, represent 2 completely different ideas, and have nothing to share one with the other.<br />
@@ -244,7 +246,7 @@ In the the very short post [Primitive Obsession](http://wiki.c2.com/?PrimitiveOb
 
 So, it's likely that just by introducing the class `URL` you will end up enhancing it with some formatting or validation logic, which you could not do with a plain, primitive `string`.
 
-### Value Object in action
+### Value Object In Action
 
 Let's see how would be a configuration parameter with a Value Object.
 
@@ -288,7 +290,7 @@ var connectionString = new ConnectionString("foobar");
 
 *Yawn...*
 
-### Enhancing the solution
+### Enhancing The Solution
 
 There's another path to explore: it would be nice if it were possible to implicitly cast it from and to strings.
 
