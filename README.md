@@ -252,7 +252,7 @@ It's nice how from `Foo`'s point of view, parameters are just an ordinary depend
 This should give us a suggestion: by simply wrapping any primitive parameter with a DTO class, you completely avoid Primitive Obsession's issues.
 
 ## Winning the Primitive Obsession
-So, if you have a composite configuation parameters (such as `BarServiceAuthParameters`), the issue is already fixed, while for simpler, primitive configuration parameters you could do the same, with a dedicated wrapper class.
+So, if you have a composite configuration parameters (such as `BarServiceAuthParameters`), the issue is already fixed, while for simpler, primitive configuration parameters you could do the same, with a dedicated wrapper class.
 
 
 ```csharp
