@@ -7,7 +7,6 @@ Registering components in Autofac is straightforward, as long as no primitive de
 * [Here come the primitives](#here-come-the-primitives)
     * [Pain points](#pain-points)
 * [The illusory solution](#the-illusory-solution)
-* [A hint](#a-hint)
 * [Winning the primitive obsession](#winning-the-primitive-obsession)
 * [Extending Primitives and Primary Constructors](#extending-primitives-and-primary-constructors)
 
@@ -209,47 +208,6 @@ I stronly suggest you to read the seminal Mark Seemann's post [Service Locator I
 Service Locator pattern is mostly applied with services, while here you are dealing with values without behaviour, simple strings and integers; yet Mark Seemann's argument apply: injecting a configuration-parameters locator is an anti-pattern anyway.<br />
 
 **Just don't do it.**
-
-## A hint
-So what to do? An idea may come from some special cases when configuration parameters come bundled together.
-
-Take a class `Foo` that requires the access an external service `Bar` and therefore needs to receive the url, the username and the access token via injection. It may come natural to group the 3 authentication parameters in a single `BarServiceAuthParameters` class:
-
-```csharp
-class BarServiceAuthParameters
-{
-    string Url { get; }
-    string Username { get; }
-    string AccessToken { get; }
-
-    public BarServiceAuthParameters(string url, string username, string accessToken)
-    {
-        Url = url;
-        Username = username;
-        AccessToken = accessToken;
-    }
-}
-
-class Foo
-{
-    public Foo(BarServiceAuthParameters authParams) { }
-}
-```
-
-Now, registering `Foo` is just:
-
-```csharp
-builder.RegisterType<Foo>();
-```
-
-since it doesn't depend on any primitives. All the burden is actually left to `BarServiceAuthParameters`, but registering it is also pretty straightforward, because it's just a matter of providing Autofac with an instance, with no other dependencies:
-
-```csharp
-builder.RegisterInstance(new BarServiceAuthParameters("http://some.url", "john", "token-123"));
-```
-
-It's nice how from `Foo`'s point of view, parameters are just an ordinary dependency.<br />
-This should give us a suggestion: by simply wrapping any primitive parameter with a DTO class, you completely avoid Primitive Obsession's issues.
 
 ## Winning the Primitive Obsession
 So, if you have a composite configuration parameters (such as `BarServiceAuthParameters`), the issue is already fixed, while for simpler, primitive configuration parameters you could do the same, with a dedicated wrapper class.
