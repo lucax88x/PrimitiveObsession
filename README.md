@@ -8,7 +8,8 @@ Registering components in Autofac is straightforward, as long as no primitive de
     * [Pain points](#pain-points)
 * [The illusory solution](#the-illusory-solution)
 * [Winning the primitive obsession](#winning-the-primitive-obsession)
-* [Extending Primitives and Primary Constructors](#extending-primitives-and-primary-constructors)
+    * [Extending Primitives and Primary Constructors](#extending-primitives-and-primary-constructors)
+    * [`implicit` and `explicit` to the resque](#implicit-and-explicit-to-the-resque)
 
 ## The ordinary case
 
