@@ -158,7 +158,7 @@ builder.RegisterType<Foo>();
 builder.RegisterInstance(ConfigurationManager.AppSetting).As<NameValueCollection>();
 ```
 
-Voilà. No more primitives.<br />
+Voilï¿½. No more primitives.<br />
 You could also be inclined to define a custom service for collecting all of your configuration parameters:
 
 ```csharp
@@ -196,7 +196,7 @@ This seems to solve most of the problems related to Primitive Obsession, right?
 Well, yes, at least it solves the ugly Autofac registration statements issue. In fact, it introduces some additional problems, possibly worse than the ones it is supposed to solve.
 
 The problem is: that's a Service Locator.<br />
-I stronly suggest you to read the seminal Mark Seemann's post [Service Locator Is An Anti-Pattern](http://http://blog.ploeh.dk/2010/02/03/ServiceLocatorisanAnti-Pattern/) which collects a lot of strong arguments on why you should avoid using the Service Locator pattern. Basically, the root of Service Locator's evil is that it hides class dependencies, causing run-time errros and maintenance additional burden.
+I stronly suggest you to read the seminal Mark Seemann's post [Service Locator Is An Anti-Pattern](http://blog.ploeh.dk/2010/02/03/ServiceLocatorisanAnti-Pattern/) which collects a lot of strong arguments on why you should avoid using the Service Locator pattern. Basically, the root of Service Locator's evil is that it hides class dependencies, causing run-time errros and maintenance additional burden.
 
 Service Locator pattern is mostly applied with services, while here you are dealing with values without behaviour, simple strings and integers; yet Mark Seemann's argument apply: injecting a configuration-parameters locator is an anti-pattern anyway.<br />
 Just don't do it.
