@@ -169,7 +169,7 @@ builder.RegisterInstance(ConfigurationManager.AppSetting).As<NameValueCollection
 ```
 
 Voilà. No more primitives!<br />
-You could also be inclined to define a custom service for collecting all of your configuration parameters:
+You could even be inclined to define a custom service for collecting all of your configuration parameters:
 
 ```csharp
 class MyConfigs
