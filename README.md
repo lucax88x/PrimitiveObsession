@@ -254,7 +254,7 @@ Unfortunately, this is not allowed in C#, since primitive types are sealed.<br /
 ![primitives are sealed classes](img/sealedclass.png)
 
 You definitely have to resort on a workaround: use a DTO as a wrapper of the primitive value.<br />
-DDD calls those DTO Value Object.
+DDD calls those DTO [Value Object](http://martinfowler.com/bliki/ValueObject.html).
 
 ```csharp
 class MaxDownloadableFiles
