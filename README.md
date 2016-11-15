@@ -254,7 +254,6 @@ Unfortunately, this is not allowed in C#, since primitive types are sealed.<br /
 ![primitives are sealed classes](img/sealedclass.png)
 
 You definitely have to resort on a workaround: use a DTO as a wrapper of the primitive value.<br />
-DDD calls those DTO [Value Object](http://martinfowler.com/bliki/ValueObject.html).
 
 ```csharp
 class MaxDownloadableFiles
@@ -288,8 +287,7 @@ class BarServiceAuthParameters
 
 The trick is: use the same strategy also when dealing with single primitive values.
 
-This gives you some benefits.<br />
-In the the very short post [Primitive Obsession](http://wiki.c2.com/?PrimitiveObsession) Jb Rainsberger claims those kind of Value Object
+In the the very short post [Primitive Obsession](http://wiki.c2.com/?PrimitiveObsession) Jb Rainsberger claims those kind of [Value Object](http://martinfowler.com/bliki/ValueObject.html).
 
 > [...] become "attractive code", meaning literally a class/module that attracts behavior towards it as new methods/functions. For example, instead of scattering all the parsing/formatting behavior for dates stored as text, introduce a DateFormat class which attracts that behavior as methods called parse() and format(), almost like magic.
 
