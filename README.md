@@ -136,7 +136,7 @@ builder.RegisterType<Foo>()
 
 Yes, it's just a matter of a capitalized `S`. Hard to spot, isn't it?
 
-The bad habit of using primitive types to represent domain ideas is a smell called *Primitive Obsession*.<br />
+The bad habit of using primitive types to represent domain ideas is a smell called [Primitive Obsession](https://sourcemaking.com/refactoring/smells/primitive-obsession).<br />
 Let's see how to avoid it without endng up with ugly Autofac registration statements.
 
 ## Service Locator Is The Wrong Solution
