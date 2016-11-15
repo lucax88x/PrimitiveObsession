@@ -369,51 +369,12 @@ string s = foo.Conn;        // implicitly converts from ConnectionString to stri
 var z = (string) foo.Conn;  // explicit conversion works as well
 ```
 
-*Brilliant!*
-
 ## Putting It All Together
-Of course, you don't want to repeat yourself, so you will define a generic base class:
-
-```csharp
-public class PrimitiveParameter<T>
-{
-    public T Value { get; private set; }
-
-    public PrimitiveParameter(T value)
-    {
-        Value = value;
-    }
-    
-    public static implicit operator T(PrimitiveParameter<T> primitiveParameter)
-    {
-        return primitiveParameter.Value;
-    }
-
-    public static implicit operator PrimitiveParameter<T>(T value)
-    {
-        return new PrimitiveParameter<T>(value);
-    }
-}
-```
 
 That's the proposed solution.<br />
 You can use it like the following:
 
 ```csharp
-public class ConnectionString : PrimitiveParameter<string>
-{
-    public ConnectionString(string value) : base (value) {}
-}
-
-public class URL : PrimitiveParameter<string>
-{
-    public URL(string value) : base (value) {}
-}
-
-public class MaxDownloadableFiles : PrimitiveParameter<int>
-{
-    public MaxDownloadableFiles(int value) : base (value) {}
-}
 
 class Foo
 {
@@ -423,6 +384,7 @@ class Foo
 var builder = new ContainerBuilder();
 builder.RegisterInstance((URL) "http://some.url");
 builder.RegisterInstance((ConnectionString) "some connection string");
+// builder.RegisterInstance("some connection string").As<ConnectionString>(); // this doesn't work
 builder.RegisterInstance((MaxdownloadableFiles) 188);
 
 builder.RegisterType<Bar>();
