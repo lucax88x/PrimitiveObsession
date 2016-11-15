@@ -35,7 +35,7 @@ builder.RegisterType<Foo>();
 builder.RegisterType<Bar>();
 ```
 
-This is enough for Autofac, since it knows how to create instances of `Bar` (it's just a matter of invoking its default constructor), and consequently it knows how to build instances of `Foo`.
+This is enough for Autofac: since it knows how to create instances of `Bar` (it's just a matter of invoking its default constructor), it also knows how to build instances of `Foo`.
 
 This works with no additional configurations even if dependencies are reversed (e.g `Bar` depends on `Foo`) or if relationships are implicit, for example when `Foo` depends on `Func<Bar>`, or on `List<Bar>` and the like: Autofac [is smart enough](http://docs.autofac.org/en/latest/resolve/relationships.html) to build an instance of the right class and inject it into the right component.
 
