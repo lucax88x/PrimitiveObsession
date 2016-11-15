@@ -323,7 +323,7 @@ That's bad.<br />
 
 ## `implicit` and `explicit` Cast Operators To The Resque
 
-Let's see what you can do in order to make that DTO resemble a primitive.
+Let's see what you can do in order to make that Value Object resemble a primitive.
 
 It would be nice if it were possible to implicitly cast it from and to `string`.<br />
 Actually, that's not too hard to achieve. There is a technique Jimmy Bogard brillantly exposed in his post [Dealing with primitive obsession](https://lostechies.com/jimmybogard/2007/12/03/dealing-with-primitive-obsession) that  makes a smart use of the cast operators `implicit` and `explicit` and allows to make you consume and create your Value Objects as they are primitives.
