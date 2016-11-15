@@ -354,7 +354,7 @@ public class ConnectionString
 }
 ```
 
-you will get the benefit to consuminging and creating it as a primitive, as in the following example:
+you will get the benefit to consuming and creating it as a primitive, as in the following example:
 
 ```csharp
 
