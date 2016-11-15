@@ -6,12 +6,11 @@ Registering components in Autofac is straightforward, as long as no primitive de
 * [The Ordinary Case](#the-ordinary-case)  
 * [Here Come The Primitives](#here-come-the-primitives)
 * [Pain Points](#pain-points)
-* [Service Locator Is The Wrong Solution](#the-illusory-solutions)
+* [Service Locator Is The Wrong Solution](#service-locator-is-the-wrong-solution)
 * [Winning The Primitive Obsession](#winning-the-primitive-obsession)
 * [Value Object In Action](#value-object-in-action)
-* [Enhancing The Solution](#enhancing-the-solution)
-* [`implicit` and `explicit` To The Resque](#implicit-and-explicit-to-the-resque)
-* [Result Achieved](#result-achieved)
+* [`implicit` and `explicit` To The Resque](#implicit-and-explicit-cast-operators-to-the-resque)
+* [Conclusion](#conclusion)
 
 ## The Ordinary Case
 
@@ -323,7 +322,7 @@ var connectionString = new ConnectionString("foobar");
 
 That's bad.<br />
 
-### Enhancing The Solution
+### `implicit` and `explicit` Cast Operators To The Resque
 
 Let's see what you can do in order to make that DTO resemble a primitive.
 
@@ -414,17 +413,26 @@ class Foo
 }
 
 var builder = new ContainerBuilder();
-builder.Register(c => (URL) "http://some.url");
-builder.Register(c => (ConnectionString) "some connection string");
-builder.Register(c => (MaxdownloadableFiles) 188);
+builder.RegisterInstance((URL) "http://some.url");
+builder.RegisterInstance((ConnectionString) "some connection string");
+builder.RegisterInstance((MaxdownloadableFiles) 188);
 
 builder.RegisterType<Bar>();
 builder.RegisterType<Foo>();
 
 ```
 
-### Result Achieved
+### Conclusion
 
-list of advantages
+* Don't use primitives. Use non-primitive Value Objects;<br />
+* Avoid using the Service Locator pattern: it's bad;
+* Define a base class using `implicit` and `explicit` cast operators to make the Value Object behave as a primitive;<br />
+* Inherit primitive configuration parameters from the base class;
+* Register them with `RegisterInstance()`.<br />
 
-modules are nicer to read, refactor is easy, you cannot pass wrong arguments, you can add some validations on the type
+You will get:
+
+* easy and straightforward Autofac register statements;
+* static compile time type checking on injected parameters (no more dependencies neither on parameters order nor on names);
+* easier refactoring
+* the ability to add validations to primitive configuration parameters.
