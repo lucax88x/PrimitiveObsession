@@ -238,33 +238,63 @@ class Foo
 }
 ```
 
-So, the basic trick for dealing with primitives in Autofac is: **don't use primitives**. 
+So, the basic trick for dealing with primitives in Autofac is: **don't use primitives**. Just represent your configuration parameters with non-primitive types.
 
-Instead, use DTO that wrap one or multiple primitive values. DDD calls those DTO Value Object.
+## Value Object In Action
+Ok. Sounds simple.<br />
+So, instead of declaring `maxDownloadableFiles` and `numerOfItemsPerPage` as `int`, all you have to do is to define 2 separate non-primitive types inheriting from `int`:
 
+```csharp
+class MaxDownloadableFiles : int {}
+class NumerOfItemsPerPage : int {}
+```
+
+Unfortunately, this is not allowed in C#, since primitive types are sealed.<br />
+
+![primitives are sealed classes](img/sealedclass.png)
+
+You definitely have to resort on a workaround: use a DTO as a wrapper of the primitive value.<br />
+DDD calls those DTO Value Object.
+
+```csharp
+class MaxDownloadableFiles
+{
+    public int Value { get; }
+
+    public MaxDownloadableFiles(int value)
+    {
+        Value = value;
+    }
+}
+```
+
+Think about it: isn't it exactly what you are already used to do, when dealing with compound configuration parameters? For example, chances are you had the need to inject into an instance the url, the username and the password for accessing a web service, and you decided to group them into a single DTO:
+
+```csharp
+class BarServiceAuthParameters
+{
+    public string Url { get; }
+    public string Username { get; }
+    public string AccessToken { get; }
+
+    public BarServiceAuthParameters(string url, string username, string accessToken)
+    {
+        Url = url;
+        Username = username;
+        AccessToken = accessToken;
+    }
+}
+```
+
+The trick is: use the same strategy also when dealing with single primitive values.
+
+This gives you some benefits.<br />
 In the the very short post [Primitive Obsession](http://wiki.c2.com/?PrimitiveObsession) Jb Rainsberger claims those kind of Value Object
 
 > [...] become "attractive code", meaning literally a class/module that attracts behavior towards it as new methods/functions. For example, instead of scattering all the parsing/formatting behavior for dates stored as text, introduce a DateFormat class which attracts that behavior as methods called parse() and format(), almost like magic.
 
 So, it's likely that just by introducing the class `URL` you will end up enhancing it with some formatting or validation logic, which you could not do with a plain, primitive `string`.
 
-### Value Object In Action
-
-Let's see how would be a configuration parameter with a Value Object.
-
-Say you replace `string ConnectionString` with a wrapper class:
-
-```csharp
-class ConnectionString
-{
-    public string Value { get; }
-
-    public ConnectionString(string value)
-    {
-        Value = value;
-    }
-}
-```
 
 Also this solution has it's drawbacks, now it's just more difficult to consume it. You need to write:
 
@@ -272,7 +302,7 @@ Also this solution has it's drawbacks, now it's just more difficult to consume i
 connectionString.Value
 ```
 
-where it used to be just
+instead
 
 ```csharp
 connectionString
@@ -290,11 +320,12 @@ you need
 var connectionString = new ConnectionString("foobar"); 
 ```
 
-*Yawn...*
+That's bad.<br />
 
 ### Enhancing The Solution
 
-There's another path to explore: it would be nice if it were possible to implicitly cast it from and to strings.
+Let's see what you can do to make that DTO as much similar as possible to a primitive `string`.<br />
+It would be nice if it were possible to implicitly cast it from and to primitives.
 
 Actually, that's not too hard to achieve. There is a technique Jimmy Bogard brillantly exposed in his post [Dealing with primitive obsession](https://lostechies.com/jimmybogard/2007/12/03/dealing-with-primitive-obsession) that  makes a smart use of the cast operators `implicit` and `explicit` and allows to make you consume and create your Value Objects as they are primitives.
 
