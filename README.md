@@ -218,29 +218,31 @@ Let me try to convince you that there is something deeply wrong with injecting a
 Say you have 2 configuration parameters: `maxDownloadableFiles` and `numerOfItemsPerPage`. They can be defined in 2 completely different contexts, represent 2 completely different ideas, and have nothing to share one with the other.<br />
 Yet you can represent both of them with the same type, `int`.
 
-This is the root error: when you use the very same class for 2 completely different purposes, it's just like collapsing `CustomerController` and `NHibernateSession` to a single class. Doing this, you would give no chance neither to Autofac nor to the compiler itself to distinguish the former from the latter.
+That's the root error: when you use the very same class for 2 completely different purposes, it's just like collapsing `CustomerController` and `NHibernateSession` to a single class. Doing this, you would give no chance neither to Autofac nor to the compiler itself to distinguish the former from the latter.
 
-You surely see the benefit in providing the customer controller and the NHibernate session with 2 dedicated classes: there wouldn't be hard to see the same benefit to using 2 different classes to the 2 configuration parameters. It would give you the opportunity to rely on the rely on the language: instead of having a constructor which takes 3 indistinguishable integers.
+It's easy to see why representing the customer controller and the NHibernate session with 2 dedicated classes is valuable: it isn't hard to see that the idea can be profitably applied to the 2 configuration parameters as well. It would give you the opportunity the rely on the compiler: instead of having a constructor which takes 3 indistinguishable integers:
 
 ```csharp
 class Foo
 {
     public Foo(int maxDownloads, int itemsPerPage, int numberOfDays) { ... }
 }
-````
+```
 
-you would actually have a maximum number of downloads, a number of items per page and a number of days, each well defined with its specific class, just like everything else:
+you would actually have 3 distinct parameters, each well defined with its specific class, just like all the other domain ideas:
 
 ```csharp
 class Foo
 {
     public Foo(MaxDownloads maxDownloads, ItemsPerPage itemsPerPage, NumberOfDays numberOfDays) { ... }
 }
-````
+```
 
-So, the basic trick for dealing with primitives in Autofac is: **don't use primitives**. Instead, use DTO that wrap one or multiple primitive values. DDD calls those DTO Value Object.
+So, the basic trick for dealing with primitives in Autofac is: **don't use primitives**. 
 
-In the the very short post [Primitive Obsession](http://wiki.c2.com/?PrimitiveObsession) Jb Rainsberger claims those kind of Vlaue Object
+Instead, use DTO that wrap one or multiple primitive values. DDD calls those DTO Value Object.
+
+In the the very short post [Primitive Obsession](http://wiki.c2.com/?PrimitiveObsession) Jb Rainsberger claims those kind of Value Object
 
 > [...] become "attractive code", meaning literally a class/module that attracts behavior towards it as new methods/functions. For example, instead of scattering all the parsing/formatting behavior for dates stored as text, introduce a DateFormat class which attracts that behavior as methods called parse() and format(), almost like magic.
 
