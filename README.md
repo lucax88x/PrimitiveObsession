@@ -371,31 +371,32 @@ var z = (string) foo.Conn;  // explicit conversion works as well
 
 ## Putting It All Together
 
-That's the proposed solution.<br />
-You can use it like the following:
+Once you define all your configuration parameters as Value Objects (with the `implicit` trick), you can use them like the following:
 
 ```csharp
-
 class Foo
 {
     public Foo(Bar bar, URL url, ConnectionString conn) { ... }
 }
 
 var builder = new ContainerBuilder();
-builder.RegisterInstance((URL) "http://some.url");
-builder.RegisterInstance((ConnectionString) "some connection string");
-// builder.RegisterInstance("some connection string").As<ConnectionString>(); // this doesn't work
-builder.RegisterInstance((MaxdownloadableFiles) 188);
-
 builder.RegisterType<Bar>();
 builder.RegisterType<Foo>();
+
+builder.RegisterInstance((URL) "http://some.url");
+builder.RegisterInstance((ConnectionString) "some connection string");
+builder.RegisterInstance((MaxdownloadableFiles) 180);
+
+// builder.RegisterInstance("some connection string").As<ConnectionString>(); // this doesn't work
+
+
 ```
 
 ## Conclusion
 
 * Don't use primitives. Use Value Objects;
 * Avoid using the Service Locator pattern: it's bad;
-* Define a base class using `implicit` and `explicit` cast operators to make the Value Object behave as a primitive;
+* Define Value Objects wrapping your configurations, using the `implicit` cast operator to make them behave as a primitive;
 * Register them with `RegisterInstance()`.
 
 You will get:
