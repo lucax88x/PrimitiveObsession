@@ -41,7 +41,7 @@ This works with no additional configurations even if dependencies are reversed (
 
 ## Here Come The Primitives
 
-Troubles start when one of the dependencies is a primitive. Suppose that `Foo` also depends on a connection string, which you decided to represent as a `string`:
+Troubles come when one of the dependencies is a primitive. Suppose that `Foo` also depends on a connection string, which you decided to represent as a `string`:
 
 ```csharp
 class Foo
