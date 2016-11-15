@@ -203,7 +203,7 @@ class Foo
 
 This seems to solve most of the problems related to Primitive Obsession, right?
 
-Well, yes, at least it solves the ugly Autofac registration statements issue. In fact, it introduces some additional problems, possibly worse than the ones it is supposed to solve.
+Well, yes, at least it solves the ugly Autofac registration statements issue. In fact, it introduces some additional problems, possibly worse than the ones it was supposed to solve.
 
 The problem is: that's a Service Locator.<br />
 I strongly suggest you to read the seminal Mark Seemann's post [Service Locator Is An Anti-Pattern](http://blog.ploeh.dk/2010/02/03/ServiceLocatorisanAnti-Pattern/) which collects a lot of strong arguments on why you should avoid using the Service Locator pattern. Basically, the root of Service Locator's evil is that it hides class dependencies, causing run-time errros and maintenance additional burden.
