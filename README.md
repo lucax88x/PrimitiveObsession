@@ -368,6 +368,8 @@ foo.Conn = (ConnectionString) "barbaz";
 string s = foo.Conn;
 ```
 
+*Brilliant!*
+
 ## Putting It All Together
 Of course, you don't want to repeat yourself, so you will define a generic base class:
 
