@@ -430,15 +430,15 @@ builder.RegisterType<Foo>();
 
 ### Conclusion
 
-* Don't use primitives. Use non-primitive Value Objects;<br />
+* Don't use primitives. Use Value Objects;
 * Avoid using the Service Locator pattern: it's bad;
-* Define a base class using `implicit` and `explicit` cast operators to make the Value Object behave as a primitive;<br />
-* Inherit primitive configuration parameters from the base class;
-* Register them with `RegisterInstance()`.<br />
+* Define a base class using `implicit` and `explicit` cast operators to make the Value Object behave as a primitive;
+* Register them with `RegisterInstance()`.
 
 You will get:
 
-* easy and straightforward Autofac register statements;
+* easy and straightforward Autofac register statements, without using lambdas or `withParameter()`;
 * static compile time type checking on injected parameters (no more dependencies neither on parameters order nor on parameters names);
-* easier refactoring
-* the ability to add validations to primitive configuration parameters.
+* easier refactoring, you can easily rename parameters or change the order of them, without breaking anything;
+* all the advantages of using Value Objects, including the possibility to validate the primitive value;
+* the above solution can used also for collection of primitives or classes, such as `List<string>`.
