@@ -220,7 +220,7 @@ Yet you can represent both of them with the same type, `int`.
 
 That's the root error: when you use the very same class for 2 completely different purposes, it's just like collapsing `CustomerController` and `NHibernateSession` to a single class: by doing so, you would give no chance neither to Autofac nor to the compiler itself to distinguish the former from the latter.
 
-It's easy to see why representing the customer controller and the NHibernate session with 2 dedicated classes is valuable: it isn't hard to see that the idea can be profitably applied to the 2 configuration parameters as well. It would give you the opportunity the rely on the compiler: instead of having a constructor which takes 3 indistinguishable integers:
+It's easy to see why representing the customer controller and the NHibernate session with 2 dedicated classes is valuable: it isn't hard to see that the idea can be profitably applied to `maxDownloadableFiles` and `numerOfItemsPerPage` well, and in general to any primitive configuration parameter. It would give you the opportunity the rely on the compiler: instead of having a constructor which takes 3 indistinguishable integers:
 
 ```csharp
 class Foo
@@ -284,7 +284,7 @@ class BarServiceAuthParameters
     }
 }
 ```
-
+Wasn't it easy to inject, since it's an ordinary class?<br />
 The trick is: use the same strategy also when dealing with single primitive values.
 
 In the the very short post [Primitive Obsession](http://wiki.c2.com/?PrimitiveObsession) Jb Rainsberger claims those kind of [Value Object](http://martinfowler.com/bliki/ValueObject.html).
