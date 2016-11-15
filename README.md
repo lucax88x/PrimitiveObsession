@@ -168,7 +168,7 @@ builder.RegisterType<Foo>();
 builder.RegisterInstance(ConfigurationManager.AppSetting).As<NameValueCollection>();
 ```
 
-Voilà. No more primitives.<br />
+Voilà. No more primitives!<br />
 You could also be inclined to define a custom service for collecting all of your configuration parameters:
 
 ```csharp
