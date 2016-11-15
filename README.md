@@ -293,16 +293,16 @@ In the the very short post [Primitive Obsession](http://wiki.c2.com/?PrimitiveOb
 
 > [...] become "attractive code", meaning literally a class/module that attracts behavior towards it as new methods/functions. For example, instead of scattering all the parsing/formatting behavior for dates stored as text, introduce a DateFormat class which attracts that behavior as methods called parse() and format(), almost like magic.
 
-So, it's likely that just by introducing the class `URL` you will end up enhancing it with some formatting or validation logic, which you could not do with a plain, primitive `string`.
+So, it's likely that just by introducing a class for representing an URL or a connection string you will end up enhancing it with some formatting or validation logic, which you could not do with a plain, primitive `string`.
 
 
-Also this solution has it's drawbacks, now it's just more difficult to consume it. You need to write:
+Unfortunately, this solution has it's drawbacks too. Now it's just more difficult to consume the `ConnectionString`. You need to write:
 
 ```csharp
 connectionString.Value
 ```
 
-instead
+instead of
 
 ```csharp
 connectionString
@@ -324,9 +324,9 @@ That's bad.<br />
 
 ### Enhancing The Solution
 
-Let's see what you can do to make that DTO as much similar as possible to a primitive `string`.<br />
-It would be nice if it were possible to implicitly cast it from and to primitives.
+Let's see what you can do in order to make that DTO as much similar as possible to a primitive `string`.
 
+It would be nice if it were possible to implicitly cast it from and to primitive.<br />
 Actually, that's not too hard to achieve. There is a technique Jimmy Bogard brillantly exposed in his post [Dealing with primitive obsession](https://lostechies.com/jimmybogard/2007/12/03/dealing-with-primitive-obsession) that  makes a smart use of the cast operators `implicit` and `explicit` and allows to make you consume and create your Value Objects as they are primitives.
 
 Go and read the post. You will learn that by defining your Value Object as
@@ -353,7 +353,7 @@ public class ConnectionString
 }
 ```
 
-you will be able to consume and create it as a primitive, as in the following example:
+you will get the benefit to consuminging and creating it as a primitive, as in the following example:
 
 ```csharp
 
