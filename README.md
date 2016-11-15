@@ -69,7 +69,7 @@ builder.RegisterType<Foo>()
     .WithParameter("connectionString", "someConnectionString");
 ```
 
-### Pain Points
+## Pain Points
 
 This is tollerable as long as there there are just a very little number of primitive dependencies.<br />
 It starts stinking when it ends up with code like the following:
@@ -321,7 +321,7 @@ var connectionString = new ConnectionString("foobar");
 
 That's bad.<br />
 
-### `implicit` and `explicit` Cast Operators To The Resque
+## `implicit` and `explicit` Cast Operators To The Resque
 
 Let's see what you can do in order to make that DTO resemble a primitive.
 
@@ -428,7 +428,7 @@ builder.RegisterType<Bar>();
 builder.RegisterType<Foo>();
 ```
 
-### Conclusion
+## Conclusion
 
 * Don't use primitives. Use Value Objects;
 * Avoid using the Service Locator pattern: it's bad;
