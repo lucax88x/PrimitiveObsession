@@ -333,7 +333,7 @@ Go and read the post. You will learn that by defining your Value Object as
 ```csharp
 public class ConnectionString
 {
-    public string Value { get; }
+    public string Value { get; private set; }
 
     public ConnectionString(string value)
     {
@@ -345,7 +345,7 @@ public class ConnectionString
         return connectionString.Value;
     }
 
-    public static explicit operator ConnectionString(string value)
+    public static implicit operator ConnectionString(string value)
     {
         return new ConnectionString(value);
     }
@@ -363,9 +363,10 @@ class Foo
 
 
 var foo = new Foo();
-foo.Conn = (ConnectionString) "barbaz";
+foo.Conn = "barbaz";        // implicitly converts from string to ConnectionString
 
-string s = foo.Conn;
+string s = foo.Conn;        // implicitly converts from ConnectionString to string 
+var z = (string) foo.Conn;  // explicit conversion works as well
 ```
 
 *Brilliant!*
@@ -376,7 +377,7 @@ Of course, you don't want to repeat yourself, so you will define a generic base 
 ```csharp
 public class PrimitiveParameter<T>
 {
-    public T Value { get; }
+    public T Value { get; private set; }
 
     public PrimitiveParameter(T value)
     {
@@ -388,7 +389,7 @@ public class PrimitiveParameter<T>
         return primitiveParameter.Value;
     }
 
-    public static explicit operator PrimitiveParameter<T>(T value)
+    public static implicit operator PrimitiveParameter<T>(T value)
     {
         return new PrimitiveParameter<T>(value);
     }
