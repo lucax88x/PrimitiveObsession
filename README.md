@@ -10,6 +10,7 @@ Registering components in Autofac is straightforward, as long as no primitive de
 * [Winning The Primitive Obsession](#winning-the-primitive-obsession)
 * [Value Object In Action](#value-object-in-action)
 * [`implicit` and `explicit` To The Resque](#implicit-and-explicit-cast-operators-to-the-resque)
+* [Putting It All Together](#putting-it-all-together)
 * [Conclusion](#conclusion)
 
 ## The Ordinary Case
@@ -369,6 +370,7 @@ foo.Conn = (ConnectionString) "barbaz";
 string s = foo.Conn;
 ```
 
+## Putting It All Together
 Of course, you don't want to repeat yourself, so you will define a generic base class:
 
 ```csharp
@@ -391,7 +393,12 @@ public class PrimitiveParameter<T>
         return new PrimitiveParameter<T>(value);
     }
 }
+```
 
+That's the proposed solution.<br />
+You can use it like the following:
+
+```csharp
 public class ConnectionString : PrimitiveParameter<string>
 {
     public ConnectionString(string value) : base (value) {}
@@ -419,7 +426,6 @@ builder.RegisterInstance((MaxdownloadableFiles) 188);
 
 builder.RegisterType<Bar>();
 builder.RegisterType<Foo>();
-
 ```
 
 ### Conclusion
@@ -433,6 +439,6 @@ builder.RegisterType<Foo>();
 You will get:
 
 * easy and straightforward Autofac register statements;
-* static compile time type checking on injected parameters (no more dependencies neither on parameters order nor on names);
+* static compile time type checking on injected parameters (no more dependencies neither on parameters order nor on parameters names);
 * easier refactoring
 * the ability to add validations to primitive configuration parameters.
