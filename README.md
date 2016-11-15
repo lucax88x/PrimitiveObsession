@@ -287,7 +287,7 @@ class BarServiceAuthParameters
 Wasn't it easy to inject, since it's an ordinary class?<br />
 The trick is: use the same strategy also when dealing with single primitive values.
 
-In the the very short post [Primitive Obsession](http://wiki.c2.com/?PrimitiveObsession) Jb Rainsberger claims those kind of [Value Object](http://martinfowler.com/bliki/ValueObject.html).
+In the the very short post [Primitive Obsession](http://wiki.c2.com/?PrimitiveObsession) J.B. Rainsberger claims those kind of [Value Object](http://martinfowler.com/bliki/ValueObject.html)
 
 > [...] become "attractive code", meaning literally a class/module that attracts behavior towards it as new methods/functions. For example, instead of scattering all the parsing/formatting behavior for dates stored as text, introduce a DateFormat class which attracts that behavior as methods called parse() and format(), almost like magic.
 
