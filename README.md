@@ -296,7 +296,7 @@ In the the very short post [Primitive Obsession](http://wiki.c2.com/?PrimitiveOb
 So, it's likely that just by introducing a class for representing an URL or a connection string you will end up enhancing it with some formatting or validation logic, which you could not do with a plain, primitive `string`.
 
 
-Unfortunately, this solution has it's drawbacks too. Now it's just more difficult to consume the `ConnectionString`. You need to write:
+Unfortunately, this solution has got it's drawbacks too. Now it's just more difficult to consume the `ConnectionString`. You need to write:
 
 ```csharp
 connectionString.Value
@@ -308,7 +308,8 @@ instead of
 connectionString
 ```
 
-since it's not a string anymore. It's also more difficult to assign it a value. Instead of
+since it's not a string anymore.<br />
+It's also more difficult to assign it a value. Instead of
 
 ```csharp
 var connectionString = "foobar";
