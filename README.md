@@ -7,7 +7,7 @@ Registering components in Autofac is straightforward, as long as no primitive de
 * [Here Come The Primitives](#here-come-the-primitives)
 * [Pain Points](#pain-points)
 * [Service Locator Is The Wrong Solution](#service-locator-is-the-wrong-solution)
-* [Winning The Primitive Obsession](#winning-the-primitive-obsession)
+* [Overcoming The Primitive Obsession](#overcoming-the-primitive-obsession)
 * [Value Objects In Action](#value-objects-in-action)
 * [`implicit` and `explicit` To The Resque](#implicit-and-explicit-cast-operators-to-the-resque)
 * [Putting It All Together](#putting-it-all-together)
@@ -212,7 +212,7 @@ Service Locator pattern is mostly related to services, while here you are dealin
 
 **Just don't do it.**
 
-## Winning The Primitive Obsession
+## Overcoming The Primitive Obsession
 
 Let me try to convince you that there is something deeply wrong with injecting a primitive.<br />
 Say you have 2 configuration parameters: `maxDownloadableFiles` and `numerOfItemsPerPage`. They can be defined in 2 completely different contexts, represent 2 completely different ideas, and have nothing to share one with the other.<br />
