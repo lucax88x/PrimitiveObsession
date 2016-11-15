@@ -8,7 +8,7 @@ Registering components in Autofac is straightforward, as long as no primitive de
 * [Pain Points](#pain-points)
 * [Service Locator Is The Wrong Solution](#service-locator-is-the-wrong-solution)
 * [Winning The Primitive Obsession](#winning-the-primitive-obsession)
-* [Value Object In Action](#value-object-in-action)
+* [Value Objects In Action](#value-objects-in-action)
 * [`implicit` and `explicit` To The Resque](#implicit-and-explicit-cast-operators-to-the-resque)
 * [Putting It All Together](#putting-it-all-together)
 * [Conclusion](#conclusion)
@@ -240,7 +240,7 @@ class Foo
 
 So, the basic trick for dealing with primitives in Autofac is: **don't use primitives**. Just represent your configuration parameters with non-primitive types.
 
-## Value Object In Action
+## Value Objects In Action
 Ok. Sounds simple.<br />
 So, instead of declaring `maxDownloadableFiles` and `numerOfItemsPerPage` as `int`, all you have to do is to define 2 separate non-primitive types inheriting from `int`:
 
