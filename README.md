@@ -369,6 +369,60 @@ foo.Conn = (ConnectionString) "barbaz";
 
 string s = foo.Conn;
 ```
+
+Of course, you don't want to repeat yourself, so you will define a generic base class:
+
+```csharp
+public class PrimitiveParameter<T>
+{
+    public T Value { get; }
+
+    public PrimitiveParameter(T value)
+    {
+        Value = value;
+    }
+    
+    public static implicit operator T(PrimitiveParameter<T> primitiveParameter)
+    {
+        return primitiveParameter.Value;
+    }
+
+    public static explicit operator PrimitiveParameter<T>(T value)
+    {
+        return new PrimitiveParameter<T>(value);
+    }
+}
+
+public class ConnectionString : PrimitiveParameter<string>
+{
+    public ConnectionString(string value) : base (value) {}
+}
+
+public class URL : PrimitiveParameter<string>
+{
+    public URL(string value) : base (value) {}
+}
+
+public class MaxDownloadableFiles : PrimitiveParameter<int>
+{
+    public MaxDownloadableFiles(int value) : base (value) {}
+}
+
+class Foo
+{
+    public Foo(Bar bar, URL url, ConnectionString conn) { ... }
+}
+
+var builder = new ContainerBuilder();
+builder.Register(c => (URL) "http://some.url");
+builder.Register(c => (ConnectionString) "some connection string");
+builder.Register(c => (MaxdownloadableFiles) 188);
+
+builder.RegisterType<Bar>();
+builder.RegisterType<Foo>();
+
+```
+
 ### Result Achieved
 
 list of advantages
