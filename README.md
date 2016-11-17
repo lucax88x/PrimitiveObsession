@@ -7,8 +7,8 @@ Registering components in Autofac is straightforward, as long as no primitive de
 * [Here Come The Primitives](#here-come-the-primitives)
 * [Pain Points](#pain-points)
 * [Service Locator Is The Wrong Solution](#service-locator-is-the-wrong-solution)
-* [Winning The Primitive Obsession](#winning-the-primitive-obsession)
-* [Value Object In Action](#value-object-in-action)
+* [Overcoming The Primitive Obsession](#overcoming-the-primitive-obsession)
+* [Value Objects In Action](#value-objects-in-action)
 * [`implicit` and `explicit` To The Resque](#implicit-and-explicit-cast-operators-to-the-resque)
 * [Putting It All Together](#putting-it-all-together)
 * [Conclusion](#conclusion)
@@ -35,13 +35,13 @@ builder.RegisterType<Foo>();
 builder.RegisterType<Bar>();
 ```
 
-This is enough for Autofac, since it knows how to create instances of `Bar` (it's just a matter of invoking its default constructor), and consequently it knows how to build instances of `Foo`.
+This is enough for Autofac: since it knows how to create instances of `Bar` (it's just a matter of invoking its default constructor), it also knows how to build instances of `Foo`.
 
 This works with no additional configurations even if dependencies are reversed (e.g `Bar` depends on `Foo`) or if relationships are implicit, for example when `Foo` depends on `Func<Bar>`, or on `List<Bar>` and the like: Autofac [is smart enough](http://docs.autofac.org/en/latest/resolve/relationships.html) to build an instance of the right class and inject it into the right component.
 
 ## Here Come The Primitives
 
-Troubles start when one of the dependencies is a primitive. Suppose that `Foo` also depends on a connection string, which you decided to represent as a `string`:
+Troubles come when one of the dependencies is a primitive. Suppose that `Foo` also depends on a connection string, which you decided to represent as a `string`:
 
 ```csharp
 class Foo
@@ -136,11 +136,11 @@ builder.RegisterType<Foo>()
 
 Yes, it's just a matter of a capitalized `S`. Hard to spot, isn't it?
 
-The bad habit of using primitive types to represent domain ideas is a smell called *Primitive Obsession*.<br />
+The bad habit of using primitive types to represent domain ideas is a smell called [Primitive Obsession](https://sourcemaking.com/refactoring/smells/primitive-obsession).<br />
 Let's see how to avoid it without endng up with ugly Autofac registration statements.
 
 ## Service Locator Is The Wrong Solution
-Why do you need to have configuration parameters, in the first place? Of course because you want the freedom to change them at runtime, presumably by using a configuration file:
+Why do you need configuration parameters, in the first place? Of course because you want the freedom to change them at runtime, presumably by using a configuration file:
 
 ```csharp
 var connectionString = ConfigurationManager.AppSetting["myConnection"];
@@ -168,8 +168,8 @@ builder.RegisterType<Foo>();
 builder.RegisterInstance(ConfigurationManager.AppSetting).As<NameValueCollection>();
 ```
 
-Voilà. No more primitives.<br />
-You could also be inclined to define a custom service for collecting all of your configuration parameters:
+Voilà. No more primitives!<br />
+You could even be inclined to define a custom service for collecting all of your configuration parameters:
 
 ```csharp
 class MyConfigs
@@ -203,7 +203,7 @@ class Foo
 
 This seems to solve most of the problems related to Primitive Obsession, right?
 
-Well, yes, at least it solves the ugly Autofac registration statements issue. In fact, it introduces some additional problems, possibly worse than the ones it is supposed to solve.
+Well, yes, at least it solves the ugly Autofac registration statements issue. In fact, it introduces some additional problems, possibly worse than the ones it was supposed to solve.
 
 The problem is: that's a Service Locator.<br />
 I strongly suggest you to read the seminal Mark Seemann's post [Service Locator Is An Anti-Pattern](http://blog.ploeh.dk/2010/02/03/ServiceLocatorisanAnti-Pattern/) which collects a lot of strong arguments on why you should avoid using the Service Locator pattern. Basically, the root of Service Locator's evil is that it hides class dependencies, causing run-time errros and maintenance additional burden.
@@ -212,15 +212,15 @@ Service Locator pattern is mostly related to services, while here you are dealin
 
 **Just don't do it.**
 
-## Winning The Primitive Obsession
+## Overcoming The Primitive Obsession
 
 Let me try to convince you that there is something deeply wrong with injecting a primitive.<br />
-Say you have 2 configuration parameters: `maxDownloadableFiles` and `numerOfItemsPerPage`. They can be defined in 2 completely different contexts, represent 2 completely different ideas, and have nothing to share one with the other.<br />
+Say you have 2 configuration parameters: `maxDownloadableFiles` and `numerOfItemsPerPage`. They can be defined in 2 completely different contexts, represent 2 completely different ideas, and have nothing to share.<br />
 Yet you can represent both of them with the same type, `int`.
 
-That's the root error: when you use the very same class for 2 completely different purposes, it's just like collapsing `CustomerController` and `NHibernateSession` to a single class. Doing this, you would give no chance neither to Autofac nor to the compiler itself to distinguish the former from the latter.
+That's the root error: when you use the very same class for 2 completely different purposes, it's just like collapsing `CustomerController` and `NHibernateSession` to a single class: by doing so, you would give no chance neither to Autofac nor to the compiler itself to distinguish the former from the latter.
 
-It's easy to see why representing the customer controller and the NHibernate session with 2 dedicated classes is valuable: it isn't hard to see that the idea can be profitably applied to the 2 configuration parameters as well. It would give you the opportunity the rely on the compiler: instead of having a constructor which takes 3 indistinguishable integers:
+It's easy to see why representing the customer controller and the NHibernate session with 2 dedicated classes is valuable: it isn't hard to see that the idea can be profitably applied to `maxDownloadableFiles` and `numerOfItemsPerPage` well, and in general to any primitive configuration parameter. It would give you the opportunity the rely on the compiler: instead of having a constructor which takes 3 indistinguishable integers:
 
 ```csharp
 class Foo
@@ -240,7 +240,7 @@ class Foo
 
 So, the basic trick for dealing with primitives in Autofac is: **don't use primitives**. Just represent your configuration parameters with non-primitive types.
 
-## Value Object In Action
+## Value Objects In Action
 Ok. Sounds simple.<br />
 So, instead of declaring `maxDownloadableFiles` and `numerOfItemsPerPage` as `int`, all you have to do is to define 2 separate non-primitive types inheriting from `int`:
 
@@ -284,10 +284,10 @@ class BarServiceAuthParameters
     }
 }
 ```
-
+Wasn't it easy to inject, since it's an ordinary class?<br />
 The trick is: use the same strategy also when dealing with single primitive values.
 
-In the the very short post [Primitive Obsession](http://wiki.c2.com/?PrimitiveObsession) Jb Rainsberger claims those kind of [Value Object](http://martinfowler.com/bliki/ValueObject.html).
+In the the very short post [Primitive Obsession](http://wiki.c2.com/?PrimitiveObsession) J.B. Rainsberger claims those kind of [Value Object](http://martinfowler.com/bliki/ValueObject.html)
 
 > [...] become "attractive code", meaning literally a class/module that attracts behavior towards it as new methods/functions. For example, instead of scattering all the parsing/formatting behavior for dates stored as text, introduce a DateFormat class which attracts that behavior as methods called parse() and format(), almost like magic.
 
@@ -323,7 +323,7 @@ That's bad.<br />
 
 ## `implicit` and `explicit` Cast Operators To The Resque
 
-Let's see what you can do in order to make that DTO resemble a primitive.
+Let's see what you can do in order to make that Value Object resemble a primitive.
 
 It would be nice if it were possible to implicitly cast it from and to `string`.<br />
 Actually, that's not too hard to achieve. There is a technique Jimmy Bogard brillantly exposed in his post [Dealing with primitive obsession](https://lostechies.com/jimmybogard/2007/12/03/dealing-with-primitive-obsession) that  makes a smart use of the cast operators `implicit` and `explicit` and allows to make you consume and create your Value Objects as they are primitives.
@@ -333,7 +333,7 @@ Go and read the post. You will learn that by defining your Value Object as
 ```csharp
 public class ConnectionString
 {
-    public string Value { get; }
+    public string Value { get; private set; }
 
     public ConnectionString(string value)
     {
@@ -345,7 +345,7 @@ public class ConnectionString
         return connectionString.Value;
     }
 
-    public static explicit operator ConnectionString(string value)
+    public static implicit operator ConnectionString(string value)
     {
         return new ConnectionString(value);
     }
@@ -363,76 +363,40 @@ class Foo
 
 
 var foo = new Foo();
-foo.Conn = (ConnectionString) "barbaz";
+foo.Conn = "barbaz";        // implicitly converts from string to ConnectionString
 
-string s = foo.Conn;
+string s = foo.Conn;        // implicitly converts from ConnectionString to string 
+var z = (string) foo.Conn;  // explicit conversion works as well
 ```
-
-*Brilliant!*
 
 ## Putting It All Together
-Of course, you don't want to repeat yourself, so you will define a generic base class:
+
+Once you define all your configuration parameters as Value Objects (with the `implicit` trick), you can use them like the following:
 
 ```csharp
-public class PrimitiveParameter<T>
-{
-    public T Value { get; }
-
-    public PrimitiveParameter(T value)
-    {
-        Value = value;
-    }
-    
-    public static implicit operator T(PrimitiveParameter<T> primitiveParameter)
-    {
-        return primitiveParameter.Value;
-    }
-
-    public static explicit operator PrimitiveParameter<T>(T value)
-    {
-        return new PrimitiveParameter<T>(value);
-    }
-}
-```
-
-That's the proposed solution.<br />
-You can use it like the following:
-
-```csharp
-public class ConnectionString : PrimitiveParameter<string>
-{
-    public ConnectionString(string value) : base (value) {}
-}
-
-public class URL : PrimitiveParameter<string>
-{
-    public URL(string value) : base (value) {}
-}
-
-public class MaxDownloadableFiles : PrimitiveParameter<int>
-{
-    public MaxDownloadableFiles(int value) : base (value) {}
-}
-
 class Foo
 {
     public Foo(Bar bar, URL url, ConnectionString conn) { ... }
 }
 
 var builder = new ContainerBuilder();
-builder.RegisterInstance((URL) "http://some.url");
-builder.RegisterInstance((ConnectionString) "some connection string");
-builder.RegisterInstance((MaxdownloadableFiles) 188);
-
 builder.RegisterType<Bar>();
 builder.RegisterType<Foo>();
+
+builder.RegisterInstance((URL) "http://some.url");
+builder.RegisterInstance((ConnectionString) "some connection string");
+builder.RegisterInstance((MaxdownloadableFiles) 180);
+
+// builder.RegisterInstance("some connection string").As<ConnectionString>(); // this doesn't work
+
+
 ```
 
 ## Conclusion
 
 * Don't use primitives. Use Value Objects;
 * Avoid using the Service Locator pattern: it's bad;
-* Define a base class using `implicit` and `explicit` cast operators to make the Value Object behave as a primitive;
+* Define Value Objects wrapping your configurations, using the `implicit` cast operator to make them behave as a primitive;
 * Register them with `RegisterInstance()`.
 
 You will get:
