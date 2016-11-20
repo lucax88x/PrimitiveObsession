@@ -9,7 +9,7 @@ Registering components in Autofac is straightforward, as long as no primitive de
 * [Service Locator Is The Wrong Solution](#service-locator-is-the-wrong-solution)
 * [Overcoming The Primitive Obsession](#overcoming-the-primitive-obsession)
 * [Value Objects In Action](#value-objects-in-action)
-* [`implicit` and `explicit` To The Resque](#implicit-and-explicit-cast-operators-to-the-resque)
+* [`implicit` and `explicit` To The Rescue](#implicit-and-explicit-cast-operators-to-the-rescue)
 * [Putting It All Together](#putting-it-all-together)
 * [Conclusion](#conclusion)
 
@@ -321,7 +321,7 @@ var connectionString = new ConnectionString("foobar");
 
 That's bad.<br />
 
-## `implicit` and `explicit` Cast Operators To The Resque
+## `implicit` and `explicit` Cast Operators To The Rescue
 
 Let's see what you can do in order to make that Value Object resemble a primitive.
 
