@@ -105,7 +105,7 @@ Would you spot the problem in the following code?
 ```csharp
 class Foo
 {
-    public Foo(Bar bar, Baz baz, string connectionString, string url) { }
+    public Foo(Bar bar, Baz baz, string connectionString, string url, int maxUsers) { }
 }
 
 builder.Register(c =>
@@ -125,7 +125,7 @@ The following code compiles, but it will throw an exception at runtime the momen
 ```csharp
 class Foo
 {
-    public Foo(Bar bar, Baz baz, string connectionString, string url) { }
+    public Foo(Bar bar, Baz baz, string connectionString, string url, int maxUsers) { }
 }
 
 builder.RegisterType<Foo>()
@@ -376,7 +376,7 @@ Once you define all your configuration parameters as Value Objects (with the `im
 ```csharp
 class Foo
 {
-    public Foo(Bar bar, URL url, ConnectionString conn) { ... }
+    public Foo(Bar bar, URL url, ConnectionString conn, MaxdownloadableFiles max) { ... }
 }
 
 var builder = new ContainerBuilder();
